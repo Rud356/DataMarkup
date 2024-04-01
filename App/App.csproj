@@ -4,10 +4,12 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <AssemblyName>DataMarkup</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="Extra\MVVM\MVVM.csproj" />
+    <ProjectReference Include="..\MVVM\MVVM.csproj" />
+    <ProjectReference Include="..\Shared\App.Shared.csproj" />
   </ItemGroup>
 
 </Project>
