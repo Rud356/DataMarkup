@@ -10,16 +10,22 @@ namespace App.MarkupProject.Models
     public class ProjectConfig : IProjectConfig
     {
         private string _projectPath;
-        private List<string> _excludedImages;
-        private HashSet<string> _markupClasses;
+        private IList<string> _excludedImages;
+        private ISet<string> _markupClasses;
 
-        public ProjectConfig(string projectPath, string projectName, IMarkupFormatter dataFormatter, HashSet<string> markupClasses)
+        public ProjectConfig(
+                string projectPath,
+                string projectName,
+                IMarkupFormatter dataFormatter,
+                IList<string> excludedImages,
+                ISet<string> markupClasses
+            )
         {
             _projectPath = projectPath;
-            _excludedImages = new List<string>();
+            _excludedImages = excludedImages;
+            _markupClasses = markupClasses;
             ProjectName = projectName;
             DataFormat = dataFormatter;
-            _markupClasses = markupClasses;
         }
         
         public string ProjectPath => _projectPath;
@@ -51,12 +57,15 @@ namespace App.MarkupProject.Models
 
         public void excludeImage(string ImagePath)
         {
-            throw new NotImplementedException();
+            if (ImagePath != null && ExcludedImages.IndexOf(ImagePath) != -1)
+            {
+                _excludedImages.Add(ImagePath);
+            }
         }
 
         public void includeImage(string ImagePath)
         {
-            throw new NotImplementedException();
+            _excludedImages.Remove(ImagePath);
         }
     }
 }
