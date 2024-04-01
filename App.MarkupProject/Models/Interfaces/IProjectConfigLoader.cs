@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace App.MarkupProject.Models.Interfaces
 {
-    internal interface IProjectConfigLoader
+    public interface IProjectConfigLoader
     {
+        public IProjectConfig ProjectConfig { get; }
+        public void saveConfig();
     }
 }

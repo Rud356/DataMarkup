@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace App.MarkupProject.Models.Interfaces
 {
-    internal interface IMarkupLoader
+    public interface IMarkupLoader
     {
     }
 }

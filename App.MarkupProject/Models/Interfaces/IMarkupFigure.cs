@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace App.MarkupProject.Models.Interfaces
 {
-    internal interface IMarkupFigure
+    public interface IMarkupFigure
     {
-        string AssignedClassName { get; set; }
-        List<Tuple<int, int>> getFiguresPoints();
+        public string AssignedClassName { get; set; }
+        public bool IsHidden { get; set; }
+
+        public List<Tuple<int, int>> GetFiguresPoints();
     }
 }

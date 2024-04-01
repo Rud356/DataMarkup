@@ -6,17 +6,21 @@ using System.Threading.Tasks;
 
 namespace App.MarkupProject.Models.Interfaces
 {
-    internal interface IProjectConfig
+    public interface IProjectConfig
     {
+        public string ProjectPath { get; }
+        public string ProjectConfigPath { get; }
         public string ProjectName { get; set; }
+
+        public ISet<string> MarkupClasses { get; }
         public IMarkupFormatter DataFormat { get; set; }
-        public List<string> ExcludedImages { get; }
+        public IList<string> ExcludedImages { get; }
 
-        public void addMarkupClass(string markupClassName);
-        public void removeMarkupClass(string markupClassName);
-        public void renameMarkupClassTo(string markupClassName, string newMarkupClassName);
+        public virtual void addMarkupClass(string markupClassName) { }
+        public virtual void removeMarkupClass(string markupClassName) { }
+        public virtual void renameMarkupClassTo(string markupClassName, string newMarkupClassName) { }
 
-        public void excludeImage(string ImagePath);
-        public void includeImage(string ImagePath);
+        public virtual void excludeImage(string ImagePath) { }
+        public virtual void includeImage(string ImagePath) { }
     }
 }

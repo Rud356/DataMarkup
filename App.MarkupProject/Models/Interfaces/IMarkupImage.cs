@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace App.MarkupProject.Models.Interfaces
 {
-    internal interface IMarkupImage
+    public interface IMarkupImage
     {
-        string ImagePath { get; }
-        bool IsIncludedInExport { get; set; }
+        public string ImagePath { get; }
+        public bool IsIncludedInExport { get; set; }
 
-        void AddFigureOnImage();
-        void RemoveFigureFromImage(int figureIndex);
+        public void AddFigureOnImage(IMarkupFigure figure);
+        public void RemoveFigureFromImage(int figureIndex);
 
-        List<IMarkupImage> GetImagesMarkup();
+        public List<IMarkupFigure> GetImagesMarkup();
     }
 }

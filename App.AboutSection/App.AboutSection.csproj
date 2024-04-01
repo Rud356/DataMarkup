@@ -11,4 +11,10 @@
     <ProjectReference Include="..\Shared\App.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="ViewModels\" />
+    <Folder Include="Views\" />
+  </ItemGroup>
+
 </Project>
