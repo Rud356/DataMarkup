@@ -14,6 +14,6 @@ namespace App.MarkupProject.Models.Interfaces
         public void AddFigureOnImage(IMarkupFigure figure);
         public void RemoveFigureFromImage(int figureIndex);
 
-        public List<IMarkupFigure> GetImagesMarkup();
+        public IList<IMarkupFigure> GetImagesMarkup();
     }
 }
