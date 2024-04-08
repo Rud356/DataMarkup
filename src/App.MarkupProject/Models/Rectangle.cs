@@ -13,7 +13,7 @@ namespace App.MarkupProject.Models
         private ObservableCollection<Tuple<int, int>> _cachedPositions; 
         private Tuple<int, int> _topCorner, _bottomCorner;
 
-        public Rectangle(Tuple<int, int, int, int> bbox, string className) : base(className)
+        public Rectangle(Tuple<int, int, int, int> bbox, string className)
         {
             _topCorner = new Tuple<int, int>(bbox.Item1, bbox.Item2);
             _bottomCorner = new Tuple<int, int>(bbox.Item3, bbox.Item4);
