@@ -8,5 +8,6 @@ namespace App.MarkupProject.Models.Interfaces
 {
     public interface IMarkupLoader
     {
+
     }
 }
