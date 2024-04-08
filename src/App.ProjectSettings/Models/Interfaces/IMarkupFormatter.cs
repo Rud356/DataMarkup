@@ -1,4 +1,5 @@
-﻿using System;
+﻿using App.ProjectSettings.DTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,6 @@ namespace App.MarkupProject.Models.Interfaces
 {
     public interface IMarkupFormatter
     {
+        public void saveMarkup(string saveTo, IList<ImageDTO> imagesMarkup);
     }
 }

@@ -8,6 +8,7 @@ namespace App.MarkupProject.Models.Interfaces
 {
     public interface IMarkupLoader
     {
-
+        public IList<IMarkupLoader> LoadImages(IMarkupFormatter formatter, IList<string> imagesPaths);
+        public IMarkupImage LoadImage(IMarkupFormatter formatter, string imagePath);
     }
 }

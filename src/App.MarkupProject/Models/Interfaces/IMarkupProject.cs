@@ -8,5 +8,11 @@ namespace App.MarkupProject.Models.Interfaces
 {
     public interface IMarkupProject
     {
+        public IProjectConfigLoader ConfigLoader { get; }
+        public IMarkupFormatter Formatter { get; set; }
+        public IList<IMarkupImage> Images { get; }
+        public string Name { get; }
+
+        public void ExportProject();
     }
 }
