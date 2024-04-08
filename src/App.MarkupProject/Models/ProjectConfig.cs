@@ -1,24 +1,22 @@
 ﻿using App.MarkupProject.Models.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace App.MarkupProject.Models
 {
-    public class ProjectConfig : IProjectConfig
+    public class ProjectConfig : ReactiveObject, IProjectConfig
     {
         private string _projectPath;
-        private IList<string> _excludedImages;
-        private ISet<string> _markupClasses;
+        private ObservableCollection<string> _excludedImages;
+        private ObservableCollection<string> _markupClasses;
 
         public ProjectConfig(
                 string projectPath,
                 string projectName,
                 IMarkupFormatter dataFormatter,
-                IList<string> excludedImages,
-                ISet<string> markupClasses
+                ObservableCollection<string> excludedImages,
+                ObservableCollection<string> markupClasses
             )
         {
             _projectPath = projectPath;
@@ -27,17 +25,17 @@ namespace App.MarkupProject.Models
             ProjectName = projectName;
             DataFormat = dataFormatter;
         }
-        
-        public string ProjectPath => _projectPath;
 
-        public string ProjectConfigPath => throw new NotImplementedException();
+        [Reactive] public string ProjectPath => _projectPath;
 
-        public string ProjectName { get; set; }
-        public IMarkupFormatter DataFormat { get; set; }
+        [Reactive] public string ProjectConfigPath => throw new NotImplementedException();
 
-        public ISet<string> MarkupClasses { get => _markupClasses; }
+        [Reactive] public string ProjectName { get; set; }
+        [Reactive] public IMarkupFormatter DataFormat { get; set; }
 
-        public IList<string> ExcludedImages { get => _excludedImages; }
+        [Reactive] public ObservableCollection<string> MarkupClasses { get => _markupClasses; }
+
+        [Reactive] public ObservableCollection<string> ExcludedImages { get => _excludedImages; }
 
         public void addMarkupClass(string markupClassName)
         {

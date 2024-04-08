@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,9 +13,9 @@ namespace App.MarkupProject.Models.Interfaces
         public string ProjectConfigPath { get; }
         public string ProjectName { get; set; }
 
-        public ISet<string> MarkupClasses { get; }
+        public ObservableCollection<string> MarkupClasses { get; }
         public IMarkupFormatter DataFormat { get; set; }
-        public IList<string> ExcludedImages { get; }
+        public ObservableCollection<string> ExcludedImages { get; }
 
         public virtual void addMarkupClass(string markupClassName) { }
         public virtual void removeMarkupClass(string markupClassName) { }

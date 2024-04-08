@@ -15,5 +15,10 @@ namespace App.MarkupProject.Models
         {
             throw new NotImplementedException();
         }
+
+        private string defaultConfigString()
+        {
+            return "";
+        }
     }
 }
