@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using System.IO;
 
 namespace App.MarkupProject.Models
 {
@@ -26,9 +27,19 @@ namespace App.MarkupProject.Models
             DataFormat = dataFormatter;
         }
 
-        [Reactive] public string ProjectPath => _projectPath;
+        [Reactive] public string ProjectPath {
+            get => _projectPath;
+            set
+            {
+                if (Directory.Exists(value)) _projectPath = value;
+                else
+                {
+                    throw new DirectoryNotFoundException("Path can not be project directory!");
+                }
+            }
+        }
 
-        [Reactive] public string ProjectConfigPath => throw new NotImplementedException();
+        [Reactive] public string ProjectConfigPath => Path.Combine(_projectPath, "config.cfg");
 
         [Reactive] public string ProjectName { get; set; }
         [Reactive] public IMarkupFormatter DataFormat { get; set; }
