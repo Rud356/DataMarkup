@@ -13,12 +13,12 @@ namespace App.MarkupProject.Models
         private ObservableCollection<string> _markupClasses;
 
         public ProjectConfig(
-                string projectPath,
-                string projectName,
-                IMarkupFormatter dataFormatter,
-                ObservableCollection<string> excludedImages,
-                ObservableCollection<string> markupClasses
-            )
+            string projectPath,
+            string projectName,
+            IMarkupFormatter dataFormatter,
+            ObservableCollection<string> excludedImages,
+            ObservableCollection<string> markupClasses
+        )
         {
             _projectPath = projectPath;
             _excludedImages = excludedImages;
@@ -27,7 +27,9 @@ namespace App.MarkupProject.Models
             DataFormat = dataFormatter;
         }
 
-        [Reactive] public string ProjectPath {
+        [Reactive]
+        public string ProjectPath
+        {
             get => _projectPath;
             set
             {

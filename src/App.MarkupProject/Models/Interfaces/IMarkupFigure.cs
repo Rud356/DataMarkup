@@ -9,7 +9,7 @@ namespace App.MarkupProject.Models.Interfaces
 {
     public interface IMarkupFigure
     {
-        public string AssignedClassName { get; set; }
+        public int AssignedClassID { get; set; }
         public bool IsHidden { get; set; }
 
         public ObservableCollection<Tuple<int, int>> Points { get; }

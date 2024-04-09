@@ -11,6 +11,6 @@ namespace App.MarkupProject.Models.Interfaces
 {
     public interface IMarkupFormatter
     {
-        public void saveMarkup(string saveTo, IList<ImageDTO> imagesMarkup);
+        public void saveMarkup(string saveTo, string ProjectName, IList<ImageDTO> imagesMarkup);
     }
 }

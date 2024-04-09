@@ -8,7 +8,7 @@ namespace App.MarkupProject.Models.Interfaces
 {
     public interface IProjectConfigLoader
     {
-        public IProjectConfig ProjectConfig { get; }
-        public void saveConfig();
+        public IProjectConfig ProjectConfigObj { get; }
+        public void SaveConfig(IProjectConfig config);
     }
 }

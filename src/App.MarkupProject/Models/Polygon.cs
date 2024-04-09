@@ -11,27 +11,27 @@ namespace App.MarkupProject.Models
     public class Polygon : ReactiveObject, IMarkupFigure
     {
         private ObservableCollection<Tuple<int, int>> _points;
-        private string _className;
+        private int _classID;
         private bool _isHidden;
 
         public Polygon()
         {
             _points = new();
-            _className = string.Empty;
+            _classID = -1;
             _isHidden = false;
         }
 
-        public Polygon(string className) : this()
+        public Polygon(int classID) : this()
         {
-            _className = className;
+            _classID = classID;
         }
 
-        public Polygon(string className, bool isHidden) : this(className)
+        public Polygon(int classID, bool isHidden) : this(classID)
         {
             _isHidden = isHidden;
         }
 
-        [Reactive] public string AssignedClassName { get => _className; set => _className = value; }
+        [Reactive] public int AssignedClassID { get => _classID; set => _classID = value; }
         [Reactive] public bool IsHidden { get => _isHidden; set => _isHidden = value; }
 
         [Reactive] public ObservableCollection<Tuple<int, int>> Points => _points;
