@@ -6,15 +6,21 @@ using System.Threading.Tasks;
 
 namespace App.ProjectSettings.DTO
 {
+    public enum MarkupFigureType
+    {
+        bbox = 0,
+        polygon = 1
+    }
+
     public class MarkupDTO
     {
-        public string AssignedClassName { get; }
-        public string MarkupType { get; }
+        public int AssignedClassID { get; }
+        public MarkupFigureType MarkupType { get; }
         public IList<Tuple<int, int>> Points { get; }
 
-        public MarkupDTO(string assignedClassName, string markupType, IList<Tuple<int, int>> points)
+        public MarkupDTO(int assignedClassID, MarkupFigureType markupType, IList<Tuple<int, int>> points)
         {
-            AssignedClassName = assignedClassName;
+            AssignedClassID = assignedClassID;
             MarkupType = markupType;
             Points = points;
         }
