@@ -6,26 +6,36 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using App.ProjectSettings.DTO;
+using System.Collections.ObjectModel;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace App.MarkupProject.Models
 {
-    public class MarkupProject : IMarkupProject
+    public class MarkupProject : ReactiveObject, IMarkupProject
     {
+        private ObservableCollection<IMarkupImage> _images;
+
         public MarkupProject(IProjectConfigLoader configLoader)
         {
             ConfigLoader = configLoader;
+            _images = new();
         }
 
+        [Reactive]
         public IProjectConfigLoader ConfigLoader { get; }
 
+        [Reactive]
         public IMarkupFormatter Formatter
         {
             get => ConfigLoader.ProjectConfigObj.DataFormat;
             set => ConfigLoader.ProjectConfigObj.DataFormat = value;
         }
 
-        public IList<IMarkupImage> Images => throw new NotImplementedException();
+        [Reactive] 
+        public ObservableCollection<IMarkupImage> Images => _images;
 
+        [Reactive]
         public string Name
         {
             get => ConfigLoader.ProjectConfigObj.ProjectName;
