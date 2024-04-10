@@ -9,12 +9,17 @@ using System.Threading.Tasks;
 using System.Text.Json.Serialization;
 using DynamicData.Tests;
 using App.ProjectSettings.Models.Interfaces;
+using App.ProjectSettings.Models.SupportedLoaderSources;
 
 namespace App.ProjectSettings.Models.SupportedFormats
 {
     public class CocoDatasetFormat : IMarkupFormatter
     {
-        public CocoDatasetFormat() {}
+        private CocoDatasetLoader _loader;
+        public CocoDatasetFormat()
+        {
+            _loader = new CocoDatasetLoader();
+        }
 
         public void saveMarkup(
             string saveTo,
@@ -168,6 +173,11 @@ namespace App.ProjectSettings.Models.SupportedFormats
         private static float GetArea(Tuple<int, int> offsets)
         { 
             return offsets.Item1*offsets.Item2;
+        }
+
+        public IList<Tuple<string, Tuple<int, int>, IList<MarkupDTO>>> loadMarkup(string fromString)
+        {
+            return _loader.LoadMarkup(fromString);
         }
     }
 }

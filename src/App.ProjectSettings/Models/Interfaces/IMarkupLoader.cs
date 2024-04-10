@@ -5,11 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App.MarkupProject.Models.Interfaces
+namespace App.ProjectSettings.Models.Interfaces
 {
     public interface IMarkupLoader
     {
-        public IList<Tuple<string, IList<MarkupDTO>>> LoadImages(IMarkupFormatter formatter, IList<string> imagesPaths);
-        public Tuple<string, IList<MarkupDTO>> LoadImageMarkup(IMarkupFormatter formatter, string imagePath);
+        public IList<Tuple<string, Tuple<int, int>, IList<MarkupDTO>>> LoadMarkup(
+            string markupText
+        );
     }
 }

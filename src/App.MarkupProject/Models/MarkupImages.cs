@@ -23,12 +23,32 @@ namespace App.MarkupProject.Models
         {
             Resolution = GetResolution(imagePath);
             ImagePath = imagePath;
+            IsIncludedInExport = true;
             _imagesFigures = new();
         }
 
         public MarkupImage(string imagePath, bool isIncludedInExport) : this(imagePath)
         {
             IsIncludedInExport = isIncludedInExport;
+        }
+
+        public MarkupImage(
+            string imagePath,
+            bool isIncludedInExport,
+            IList<IMarkupFigure> imagesFigures
+        ) : this(imagePath, isIncludedInExport, imagesFigures, GetResolution(imagePath))
+        { }
+
+        public MarkupImage(
+            string imagePath,
+            bool isIncludedInExport,
+            IList<IMarkupFigure> imagesFigures,
+            Tuple<int, int> resolution
+        )
+        {
+            Resolution = resolution;
+            ImagePath = imagePath;
+            _imagesFigures = new(imagesFigures);
         }
 
         [Reactive] public string ImagePath { get; }

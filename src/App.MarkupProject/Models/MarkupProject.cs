@@ -90,5 +90,74 @@ namespace App.MarkupProject.Models
                 images
             );
         }
+
+        private void loadImages()
+        {
+            List<string> passedImages = new();
+            string markupPath = Path.Combine(ConfigLoader.ProjectConfigObj.ProjectPath, "instance_default.json");
+            if (File.Exists(markupPath))
+            {
+                try
+                {
+                    var markup = ConfigLoader.ProjectConfigObj.DataFormat.loadMarkup(File.ReadAllText(markupPath));
+
+                    foreach ( var imageMarkup in markup )
+                    {
+                        List<IMarkupFigure> figures = new();
+
+                        foreach (var fig in imageMarkup.Item3)
+                        {
+                            if (fig.MarkupType == MarkupFigureType.polygon)
+                            {
+                                Polygon poly = new();
+
+                                foreach (var p in fig.Points)
+                                {
+                                    poly.Points.Add(p);
+                                }
+
+                                figures.Add(poly);
+                            }
+                            else if (fig.MarkupType== MarkupFigureType.bbox)
+                            {
+                                figures.Add(
+                                    new Rectangle(
+                                        new Tuple<int, int, int, int>(
+                                            // Bbox contains 4 points in dto, which have clock-wise order of points (x, y) pixels
+                                            fig.Points[0].Item1, fig.Points[0].Item2,
+                                            fig.Points[3].Item1, fig.Points[3].Item2
+                                        ), fig.AssignedClassID
+                                    )
+                                );
+                            }
+                            else continue;
+                        }
+
+                        _images.Add(new MarkupImage(imageMarkup.Item1, true, figures, imageMarkup.Item2));
+                        passedImages.Add(Path.GetFileName(imageMarkup.Item1));
+                    }
+                }
+
+                catch
+                { }
+
+                foreach (var file in Directory.GetFiles(ConfigLoader.ProjectConfigObj.ProjectPath))
+                {
+                    try
+                    {
+                        if (passedImages.Contains(Path.GetFileName(file))) {
+                            continue;
+                        }
+
+                        MarkupImage img = new(file);
+                        Images.Add(img);
+                    }
+                    catch (FileFormatException)
+                    {
+                        continue;
+                    }
+                }
+            }
+        }
     }
 }

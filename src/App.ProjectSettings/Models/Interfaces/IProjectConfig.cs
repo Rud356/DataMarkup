@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App.MarkupProject.Models.Interfaces
+namespace App.ProjectSettings.Models.Interfaces
 {
     public interface IProjectConfig
     {
