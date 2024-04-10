@@ -21,6 +21,7 @@ namespace App.MarkupProject.Models
         {
             ConfigLoader = configLoader;
             _images = new();
+            loadImages();
         }
 
         [Reactive]
