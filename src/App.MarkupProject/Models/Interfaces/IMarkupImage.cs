@@ -12,6 +12,8 @@ namespace App.MarkupProject.Models.Interfaces
         public string ImagePath { get; }
         public bool IsIncludedInExport { get; set; }
 
+        public Tuple<int, int> Resolution { get; }
+
         public ObservableCollection<IMarkupFigure> Markup { get; }
     }
 }

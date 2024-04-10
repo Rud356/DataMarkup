@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace App.MarkupProject.Models.Interfaces
 {
     public interface IMarkupProject
@@ -11,7 +12,7 @@ namespace App.MarkupProject.Models.Interfaces
         public IProjectConfigLoader ConfigLoader { get; }
         public IMarkupFormatter Formatter { get; set; }
         public IList<IMarkupImage> Images { get; }
-        public string Name { get; }
+        public string Name { get; set; }
 
         public void ExportProject();
     }
