@@ -1,5 +1,4 @@
-﻿using App.MarkupProject.Models.Interfaces;
-using App.ProjectSettings.DTO;
+﻿using App.ProjectSettings.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +8,9 @@ using Newtonsoft.Json;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
 using DynamicData.Tests;
+using App.ProjectSettings.Models.Interfaces;
 
-namespace App.MarkupProject.Models.SupportedFormats
+namespace App.ProjectSettings.Models.SupportedFormats
 {
     public class CocoDatasetFormat : IMarkupFormatter
     {

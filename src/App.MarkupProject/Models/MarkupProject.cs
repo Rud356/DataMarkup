@@ -9,6 +9,7 @@ using App.ProjectSettings.DTO;
 using System.Collections.ObjectModel;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using App.ProjectSettings.Models.Interfaces;
 
 namespace App.MarkupProject.Models
 {

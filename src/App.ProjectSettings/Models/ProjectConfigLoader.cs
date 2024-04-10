@@ -1,5 +1,4 @@
-﻿using App.MarkupProject.Models.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,10 +9,10 @@ using System.Collections.ObjectModel;
 using Newtonsoft.Json;
 using App.ProjectSettings.DTO;
 using App.ProjectSettings.Exceptions;
-using App.MarkupProject.Models.SupportedFormats;
+using App.ProjectSettings.Models.Interfaces;
 
 // TODO: finish implementing to be able to load project from folder, and if not found - create new project file
-namespace App.MarkupProject.Models
+namespace App.ProjectSettings.Models
 {
     public class ProjectConfigLoader : IProjectConfigLoader
     {

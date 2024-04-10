@@ -1,5 +1,4 @@
-﻿using App.MarkupProject.Models.Interfaces;
-using App.MarkupProject.Models.SupportedFormats;
+﻿using App.ProjectSettings.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

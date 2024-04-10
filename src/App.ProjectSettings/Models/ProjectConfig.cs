@@ -1,10 +1,10 @@
-﻿using App.MarkupProject.Models.Interfaces;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.IO;
+using App.ProjectSettings.Models.Interfaces;
 
-namespace App.MarkupProject.Models
+namespace App.ProjectSettings.Models
 {
     public class ProjectConfig : ReactiveObject, IProjectConfig
     {
