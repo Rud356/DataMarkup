@@ -62,13 +62,16 @@ namespace App.ProjectSettings.Models
 
         public void renameMarkupClassTo(string markupClassName, string newMarkupClassName)
         {
-            _markupClasses.Remove(markupClassName);
-            _markupClasses.Add(newMarkupClassName);
+            int index = _markupClasses.IndexOf(markupClassName);
+            if (index != -1)
+            {
+                _markupClasses[index] = newMarkupClassName;
+            }
         }
 
         public void excludeImage(string ImagePath)
         {
-            if (ImagePath != null && ExcludedImages.IndexOf(ImagePath) != -1)
+            if (ImagePath != null && ExcludedImages.IndexOf(ImagePath) == -1)
             {
                 _excludedImages.Add(ImagePath);
             }
