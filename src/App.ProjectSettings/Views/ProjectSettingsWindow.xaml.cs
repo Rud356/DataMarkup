@@ -8,16 +8,5 @@ namespace App.ProjectSettings.Views
         {
             InitializeComponent();
         }
-
-        // Обработчик события для кнопки "Назад"
-        private void BackToMainWindow_Click(object sender, RoutedEventArgs e)
-        {
-            // Создаем новый экземпляр главного окна
-            MainWindow mainWindow = new MainWindow();
-            mainWindow.Show(); // Показываем главное окно
-            Close(); // Закрываем текущее окно
-        }
-
-        // Другие методы и события окна
     }
 }

@@ -18,22 +18,11 @@ namespace App.MarkupProject.Views
     /// <summary>
     /// Логика взаимодействия для MarkupWindow.xaml
     /// </summary>
-    public partial class MarkupWindow : Window
+    public partial class MarkupWindow : UserControl
     {
         public MarkupWindow()
         {
             InitializeComponent();
-        }
-        private void BackToMainWindow_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindow mainWindow = new MainWindow(); // Создаем новый экземпляр главного окна
-            mainWindow.Show(); // Показываем главное окно
-            Close(); // Закрываем текущее окно
-        }
-
-        private void NextImage_Click(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }

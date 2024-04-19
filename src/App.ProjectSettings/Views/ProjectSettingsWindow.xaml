@@ -15,20 +15,20 @@
 
         <!-- Навигационная панель -->
         <StackPanel Grid.Row="0" Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5">
-            <Button Content="Настройки проекта" Click="ProjectSettings_Click" Margin="5"/>
-            <Button Content="Настройки сборки" Click="BuildSettings_Click" Margin="5"/>
+            <Button Content="Настройки проекта" Margin="5"/>
+            <Button Content="Настройки сборки" Margin="5"/>
         </StackPanel>
 
         <!-- Содержимое страницы настроек -->
         <ContentControl Grid.Row="1" Name="contentArea"/>
 
         <!-- Кнопка Назад -->
-        <Button Content="Назад" Click="BackToMainWindow_Click" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,5,5,0" Width="49"/>
+        <Button Content="Назад" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,5,5,0" Width="49"/>
 
         <!-- Кнопки применения и отмены -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5">
-            <Button Content="Применить" Click="Apply_Click" Margin="5"/>
-            <Button Content="Отмена" Click="Cancel_Click" Margin="5"/>
+            <Button Content="Применить" Margin="5"/>
+            <Button Content="Отмена" Margin="5"/>
         </StackPanel>
     </Grid>
 </Window>

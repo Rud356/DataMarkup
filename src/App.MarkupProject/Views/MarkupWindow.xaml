@@ -1,11 +1,11 @@
-﻿<Window x:Class="App.MarkupProject.Views.MarkupWindow"
+﻿<UserControl x:Class="App.MarkupProject.Views.MarkupWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:App.MarkupProject.Views"
         mc:Ignorable="d"
-        Title="MarkupWindow" Height="450" Width="800">
+        Height="450" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -19,10 +19,10 @@
         <StackPanel Grid.Column="0" VerticalAlignment="Top" Margin="5,5,5,0">
             <TextBlock Text="Загрузить изображение:" Margin="0,0,0,5"/>
             <!-- Здесь добавлен список изображений и кнопки "Предыдущее" и "Следующее" -->
-            <ComboBox x:Name="imageComboBox" Width="150" Margin="0,0,0,5" SelectionChanged="ImageComboBox_SelectionChanged" Height="373"/>
+            <ComboBox x:Name="imageComboBox" Width="150" Margin="0,0,0,5" Height="373"/>
             <StackPanel Orientation="Horizontal">
-                <Button Content="Предыдущее" Click="PreviousImage_Click" Margin="0,0,5,0"/>
-                <Button Content="Следующее" Click="NextImage_Click"/>
+                <Button Content="Предыдущее" Margin="0,0,5,0"/>
+                <Button Content="Следующее"/>
             </StackPanel>
             <!-- Здесь можно добавить элемент управления для отображения загруженных изображений и их листания -->
         </StackPanel>
@@ -34,12 +34,12 @@
 
         <!-- Правая часть: кнопки "Инструменты" и кнопка "Назад" -->
         <StackPanel Grid.Column="4" VerticalAlignment="Top" Margin="5,5,5,0">
-            <Button Content="Назад" Click="BackToMainWindow_Click" Margin="0,0,0,5"/>
+            <Button Content="Назад" Margin="0,0,0,5"/>
             <TextBlock Text="Инструменты:" Margin="0,0,0,5"/>
-            <Button Content="Полигон" Click="PolygonTool_Click" Margin="0,0,0,5"/>
-            <Button Content="Прямоугольник" Click="RectangleTool_Click" Margin="0,0,0,5"/>
-            <Button Content="Линия" Click="LineTool_Click" Margin="0,0,0,5"/>
-            <Button Content="Точка" Click="PointTool_Click" Margin="0,0,0,5"/>
+            <Button Content="Полигон" Margin="0,0,0,5"/>
+            <Button Content="Прямоугольник" Margin="0,0,0,5"/>
+            <Button Content="Линия" Margin="0,0,0,5"/>
+            <Button Content="Точка" Margin="0,0,0,5"/>
         </StackPanel>
 
         <!-- Правая часть: поле для отображения текущей разметки -->
@@ -51,9 +51,9 @@
                 <TextBox Width="100"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <Button Content="Скрыть" Click="HideMarkup_Click" Margin="0,0,5,0"/>
-                <Button Content="Показать" Click="ShowMarkup_Click"/>
+                <Button Content="Скрыть" Margin="0,0,5,0"/>
+                <Button Content="Показать"/>
             </StackPanel>
         </StackPanel>
     </Grid>
-</Window>
+</UserControl>
