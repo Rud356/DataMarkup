@@ -13,12 +13,9 @@
         d:DesignWidth="640"
         Height="480"
         Width="{Binding Width, Mode=TwoWay}"
-        Style="{StaticResource WindowStyle}"
         d:DataContext="{d:DesignInstance vm:AppViewModel}"
         >
     <Grid>
-        <!--<ContentControl regions:RegionManager.RegionName="{x:Static shared:Regions.MainRegion}"
-                Visibility="{Binding IsFlipped, Converter={cv:VisibilityReverseConverter}}"/>
-        -->
+        <ContentControl regions:RegionManager.RegionName="MainRegion"/>
     </Grid>
 </Window>

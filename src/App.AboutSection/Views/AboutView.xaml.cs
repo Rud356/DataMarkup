@@ -6,9 +6,9 @@ namespace App.AboutSection.Views
     /// <summary>
     /// Interaction logic for AboutWindow.xaml
     /// </summary>
-    public partial class AboutWindow : UserControl
+    public partial class AboutView : UserControl
     {
-        public AboutWindow()
+        public AboutView()
         {
             InitializeComponent();
         }

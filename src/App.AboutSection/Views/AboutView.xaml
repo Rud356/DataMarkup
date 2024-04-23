@@ -1,14 +1,14 @@
-﻿<UserControl x:Class="App.AboutSection.Views.AboutWindow"
+﻿<UserControl x:Class="App.AboutSection.Views.AboutView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:local="clr-namespace:App.AboutSection.Views"
-        mc:Ignorable="d"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:viewmodels="clr-namespace:App.AboutSection.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance viewmodels:AboutViewModel}"
         Height="450" Width="800">
     <Grid>
         <TextBlock Text="Версия программы: 1.0" HorizontalAlignment="Center" VerticalAlignment="Center" Height="371" Width="723"/>
         <!-- Добавляем кнопку "Назад" -->
-        <Button Content="Назад" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,10,0" Width="66"/>
+        <Button Command="{Binding TestCommand}" Content="Назад" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,10,0" Width="66"/>
     </Grid>
 </UserControl>
