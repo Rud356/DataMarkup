@@ -4,7 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:App.MarkupProject.Views"
+             xmlns:viewmodels="clr-namespace:App.MarkupProject.ViewModels"
         mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance viewmodels:MarkupWindowModel}"
         Height="450" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -34,7 +36,7 @@
 
         <!-- Правая часть: кнопки "Инструменты" и кнопка "Назад" -->
         <StackPanel Grid.Column="4" VerticalAlignment="Top" Margin="5,5,5,0">
-            <Button Content="Назад" Margin="0,0,0,5"/>
+            <Button Command="{Binding GoBackCommand}" Content="Назад" Margin="0,0,0,5"/>
             <TextBlock Text="Инструменты:" Margin="0,0,0,5"/>
             <Button Content="Полигон" Margin="0,0,0,5"/>
             <Button Content="Прямоугольник" Margin="0,0,0,5"/>

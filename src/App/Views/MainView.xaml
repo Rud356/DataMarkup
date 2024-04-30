@@ -14,7 +14,7 @@
 
             <!-- Кнопки -->
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10">
-                <Button Content="Открыть проект" Margin="5" Width="100" Height="50"/>
+                <Button Command="{Binding OpenMarkupWindowCommand}" Content="Открыть проект" Margin="5" Width="100" Height="50"/>
                 <Button Command="{Binding TestCommand}" Content="О программе" Margin="5" Width="100" Height="50"/>
             </StackPanel>
       

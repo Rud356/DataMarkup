@@ -9,6 +9,7 @@ using App.ViewModels;
 using App.Views;
 using SamplePrism2024.About;
 using App.AboutSection.Views;
+using App.MarkupProject.Views;
 
 namespace App;
 
@@ -28,8 +29,10 @@ public partial class MainApp
     protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
     {
         moduleCatalog
-            .AddModule<AboutModule>();
+            .AddModule<AboutModule>()
+            .AddModule<MarkupModule>();
     }
+    
     protected override void OnInitialized()
     {
         base.OnInitialized();

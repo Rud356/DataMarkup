@@ -9,6 +9,6 @@
     <Grid>
         <TextBlock Text="Версия программы: 1.0" HorizontalAlignment="Center" VerticalAlignment="Center" Height="371" Width="723"/>
         <!-- Добавляем кнопку "Назад" -->
-        <Button Command="{Binding TestCommand}" Content="Назад" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,10,0" Width="66"/>
+        <Button Command="{Binding GoBackCommand}" Content="Назад" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,10,0" Width="66"/>
     </Grid>
 </UserControl>

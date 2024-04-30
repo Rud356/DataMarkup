@@ -13,10 +13,16 @@ namespace App.ViewModels
     internal class MainViewModel
     {
         public ICommand TestCommand { get; set; }
+        public ICommand OpenMarkupWindowCommand { get; set; }
         public MainViewModel(IRegionManager navigation)
         {
             TestCommand = new DelegateCommand(() => {
                 navigation.RequestNavigate("MainRegion", "AboutView");
+            });
+            
+            OpenMarkupWindowCommand = new DelegateCommand(() =>
+            {
+                navigation.RequestNavigate("MainRegion", "MarkupWindow");
             });
         }
     }

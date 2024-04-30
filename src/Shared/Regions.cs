@@ -14,5 +14,6 @@ namespace App.Shared
     public static class Navigation
     {
         public const string AboutPage = "AboutView";
+        public const string MarkupPage = "MarkupWindow";
     }
 }
