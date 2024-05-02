@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:App.MarkupProject.Views"
              xmlns:viewmodels="clr-namespace:App.MarkupProject.ViewModels"
         mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance viewmodels:MarkupWindowModel}"
+             d:DataContext="{d:DesignInstance viewmodels:MarkupWindowViewModel}"
         Height="450" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -32,16 +32,19 @@
         <!-- Центральная часть: поле редактирования изображения -->
         <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1" Margin="5,5,5,5" Grid.ColumnSpan="3">
             <!-- Здесь может быть элемент управления для редактирования изображения -->
+            <Image x:Name="ImageControl" Stretch="Uniform"/>
         </Border>
 
         <!-- Правая часть: кнопки "Инструменты" и кнопка "Назад" -->
         <StackPanel Grid.Column="4" VerticalAlignment="Top" Margin="5,5,5,0">
             <Button Command="{Binding GoBackCommand}" Content="Назад" Margin="0,0,0,5"/>
             <TextBlock Text="Инструменты:" Margin="0,0,0,5"/>
-            <Button Content="Полигон" Margin="0,0,0,5"/>
-            <Button Content="Прямоугольник" Margin="0,0,0,5"/>
-            <Button Content="Линия" Margin="0,0,0,5"/>
-            <Button Content="Точка" Margin="0,0,0,5"/>
+            <Button Content="Полигон" Margin="0,0,0,5" Command="{Binding PolygonToolCommand}"/>
+            <Button Content="Прямоугольник" Margin="0,0,0,5" Command="{Binding RectangleToolCommand}" />
+            <Button Content="Перемещение фигуры" Margin="0,0,0,5" Command="{Binding MoveFigureToolCommand}"/>
+            <Button Content="Перемещение точек" Margin="0,0,0,5" Command="{Binding MovePointsToolCommand}"/>
+            <Button Content="Удаление фигуры" Margin="0,0,0,5" Command="{Binding DeleteToolCommand}"/>
+            <Button Content="Выбор фигуры" Margin="0,0,0,5" Command="{Binding ChooseFigureToolCommand}"/>
         </StackPanel>
 
         <!-- Правая часть: поле для отображения текущей разметки -->
