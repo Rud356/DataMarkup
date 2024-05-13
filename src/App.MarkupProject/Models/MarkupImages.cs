@@ -12,6 +12,7 @@ using System.Windows.Controls;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.Drawing;
+using System.Windows.Media;
 
 namespace App.MarkupProject.Models
 {
@@ -57,6 +58,8 @@ namespace App.MarkupProject.Models
 
         [Reactive] public ObservableCollection<IMarkupFigure> Markup { get => _imagesFigures; }
         public Tuple<int, int> Resolution { get; }
+        public ImageSource ImageSource { get; internal set; }
+        public IEnumerable<object> MarkupFigures { get; internal set; }
 
         private static Tuple<int, int> GetResolution(string path)
         {
