@@ -58,12 +58,10 @@ namespace App.MarkupProject.Models
 
         [Reactive] public ObservableCollection<IMarkupFigure> Markup { get => _imagesFigures; }
         public Tuple<int, int> Resolution { get; }
-        public ImageSource ImageSource { get; internal set; }
-        public IEnumerable<object> MarkupFigures { get; internal set; }
 
         private static Tuple<int, int> GetResolution(string path)
         {
-            if (File.Exists(path))
+            if (!File.Exists(path))
             {
                 throw new FileNotFoundException();
             }

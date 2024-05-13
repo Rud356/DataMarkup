@@ -32,7 +32,7 @@ namespace App.ProjectSettings.Models
                 File.WriteAllText(projectConfigPath, DefaultConfigString());
             }
 
-            ConfigDTO? cfg = JsonConvert.DeserializeObject<ConfigDTO>(projectConfigPath);
+            ConfigDTO? cfg = JsonConvert.DeserializeObject<ConfigDTO>(File.ReadAllText(projectConfigPath));
             bool isPartiallyMalformed = false;
 
             if (cfg is null)
@@ -62,7 +62,7 @@ namespace App.ProjectSettings.Models
 
             IMarkupFormatter? markupFormat = null;
 
-            if (cfg.markupClasses is null)
+            if (cfg.dataFormatter is null)
             {
                 cfg.dataFormatter = "CocoDataset";
                 isPartiallyMalformed = true;
@@ -91,8 +91,6 @@ namespace App.ProjectSettings.Models
                 new ObservableCollection<string>(cfg.excludedImages),
                 new ObservableCollection<string>(cfg.markupClasses)
             );
-
-            
         }
 
         public void SaveConfig(IProjectConfig config)
@@ -105,9 +103,9 @@ namespace App.ProjectSettings.Models
             throw new NotImplementedException();
         }
 
-        private string DefaultConfigString()
+        public static string DefaultConfigString()
         {
-            return "";
+            return /*lang=json*/ "{\"ProjectName\": \"Default Name\", \"excludedImages\": [], \"markupClasses\": [], \"dataFormatter\": \"CocoDataset\"}";
         }
     }
 }

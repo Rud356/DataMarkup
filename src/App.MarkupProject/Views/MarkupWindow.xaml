@@ -34,6 +34,11 @@
                 <TextBlock Text="123" Canvas.Top="20" Canvas.Left="30"/>
                 <TextBlock Text="123" Canvas.Top="20" Canvas.Left="10"/>
                 <TextBlock Text="123" Canvas.Top="50" Canvas.Left="30"/>
+                <!-- TODO: починить размеры здесь -->
+                <!-- Здесь автоматически биндится картинка -->
+                <Image Source="{Binding SelectedImage.ImagePath}"
+                       Stretch="UniformToFill" 
+                       ></Image>
             </Canvas>
         </Border>
 

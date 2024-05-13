@@ -20,6 +20,11 @@ using System.IO;
 using System.Windows.Controls;
 using App.MarkupProject.Models;
 using System.ComponentModel;
+using System.Windows.Media.Imaging;
+using App.Shared.Events;
+using Prism.Events;
+using App.ProjectSettings.Models;
+using App.ProjectSettings.Models.Interfaces;
 
 
 namespace App.MarkupProject.ViewModels
@@ -62,6 +67,8 @@ namespace App.MarkupProject.ViewModels
         public ICommand MovePointsToolCommand { get; }
         public ICommand GoBackCommand { get; set; }
 
+        private IMarkupProject _project;
+
         private MarkupImage _selectedImage;
 
 
@@ -71,24 +78,26 @@ namespace App.MarkupProject.ViewModels
             set
             {
                 _selectedImage = value;
-                OnPropertyChanged(nameof(SelectedImage));
+                OnPropertyChanged(new PropertyChangedEventArgs("SelectedImage"));
                 UpdateCanvas();
             }
-        }
-
-        private PropertyChangedEventArgs nameof(MarkupImage selectedImage)
-        {
-            throw new NotImplementedException();
         }
 
         public Canvas ImageCanvas { get; }
 
         public MarkupWindowViewModel(IRegionManager regionManager, Canvas imageCanvas)
         {
+            
+
             GoBackCommand = new DelegateCommand(() =>
             {
                 regionManager.RequestNavigate("MainRegion", "MainView");
             });
+            _project = ExecuteLoadProject();
+
+            if (_project == null)
+                // Go back
+                regionManager.RequestNavigate("MainRegion", "MainView");
 
             PolygonToolCommand = new DelegateCommand(ExecutePolygonTool);
             RectangleToolCommand = new DelegateCommand(ExecuteRectangleTool);
@@ -98,57 +107,12 @@ namespace App.MarkupProject.ViewModels
             MovePointsToolCommand = new DelegateCommand(ExecuteMovePointsTool);
             ImageCanvas = imageCanvas;
         }
-       
-
-       
 
         private void ExecutePolygonTool()
         {
             SelectedTool = MarkupTool.Polygon;
             // Обработка команды инструмента "Полигон"
         }
-
-        //private void ExecuteRectangleTool()
-        //{
-        //    SelectedTool = MarkupTool.Rectangle;
-
-        //    // Добавляем обработчик события нажатия на холст для рисования прямоугольника
-        //    ImageCanvas.MouseLeftButtonDown += (sender, e) =>
-        //    {
-        //        // Получаем координаты клика мыши относительно холста
-        //        Point position = e.GetPosition((IInputElement)sender);
-
-        //        if (_firstPoint == null)
-        //        {
-        //            // Сохраняем координаты первой точки прямоугольника
-        //            _firstPoint = position;
-        //        }
-        //        else
-        //        {
-        //            // Создаем прямоугольник с углами в первой и второй точках
-        //            double left = Math.Min(_firstPoint.Value.X, position.X);
-        //            double top = Math.Min(_firstPoint.Value.Y, position.Y);
-        //            double width = Math.Abs(position.X - _firstPoint.Value.X);
-        //            double height = Math.Abs(position.Y - _firstPoint.Value.Y);
-
-        //            // Создаем прямоугольник
-        //            var rectangle = new System.Windows.Shapes.Rectangle
-        //            {
-        //                Width = width,
-        //                Height = height,
-        //                Stroke = Brushes.Red, // Выбираем цвет обводки прямоугольника
-        //                StrokeThickness = 2, // Выбираем толщину обводки прямоугольника
-        //                Margin = new Thickness(left, top, 0, 0) // Устанавливаем позицию прямоугольника
-        //            };
-
-        //            // Добавляем прямоугольник на холст
-        //            ImageCanvas.Children.Add(rectangle);
-
-        //            // Сбрасываем первую точку прямоугольника для создания нового прямоугольника
-        //            _firstPoint = null;
-        //        }
-        //    };
-        //}
 
         private void ExecuteRectangleTool()
         {
@@ -160,11 +124,13 @@ namespace App.MarkupProject.ViewModels
             // Добавляем обработчик события нажатия на холст для рисования прямоугольника
             ImageCanvas.MouseLeftButtonDown += ImageCanvas_MouseLeftButtonDown;
             
-            var imagePath = "Images/testImage.png";
+            var imagePath = "C:\\Users\\Rud356-pc\\Documents\\Projects source code\\DataMarkup\\src\\App.MarkupProject\\Images\\testImage.png";
             SelectedImage = new MarkupImage(imagePath);
             UpdateCanvas();
         }
 
+
+        // TODO: переделать, только на событиях
         private void ImageCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             // Получаем координаты клика мыши относительно холста
@@ -224,18 +190,69 @@ namespace App.MarkupProject.ViewModels
         {
             if (SelectedImage != null)
             {
-                // Очистка холста
-                ImageCanvas.Children.Clear();
-
-                // Загрузка изображения на холст
-                var imageControl = new Image { Source = SelectedImage.ImageSource };
-                ImageCanvas.Children.Add(imageControl);
+                // TODO: починить размеры в xaml
+                ImageCanvas.UpdateLayout();
 
                 // Отображение элементов разметки
-                foreach (var figure in SelectedImage.MarkupFigures)
+                MarkupDisplayUpdate();
+            }
+        }
+
+        private void MarkupDisplayUpdate()
+        {
+            // Отображение элементов разметки
+            foreach (IMarkupFigure figure in SelectedImage.Markup)
+            {
+                // ТУТ ЛОГИКА
+            }
+        }
+
+        private IMarkupProject ExecuteLoadProject(bool showDialog = true)
+        {
+            // Открыть диалоговое окно выбора папки
+            var dialog = new OpenFileDialog();
+            dialog.Title = "Выберите папку проекта";
+            dialog.Filter = "Папки|.";
+            dialog.CheckFileExists = false;
+            dialog.CheckPathExists = true;
+            dialog.FileName = "Выберите папку";
+
+            string selectedFolder;
+            IProjectConfigLoader configLoader;
+            IMarkupProject markupProject;
+
+            bool? result = true;
+
+            if (showDialog)
+            {
+                result = dialog.ShowDialog();
+            }
+
+            if (result == true)
+            {
+                selectedFolder = Path.GetDirectoryName(dialog.FileName);
+                // TODO: null check
+                // TODO: добавить вопрос о создании нового проекта, если не обнаружен в папке
+                // Получить список файлов в выбранной папке
+                try
                 {
-                    // ТУТ ЛОГИКА
+                    configLoader = new ProjectConfigLoader(selectedFolder);
+                    markupProject = new Models.MarkupProject(configLoader);
                 }
+                // TODO: сделать правильней по логике, сейчас пример создания дефолт конфига
+                catch (Exception e)
+                {
+                    File.WriteAllText(selectedFolder + "\\config.cfg", ProjectConfigLoader.DefaultConfigString());
+                    return ExecuteLoadProject();
+                }
+
+                // Обработать каждый файл, как необходимо для вашего приложения
+                return markupProject;
+            }
+            
+            else
+            {
+                return null;
             }
         }
     }
