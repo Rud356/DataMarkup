@@ -141,22 +141,23 @@ namespace App.MarkupProject.Models
 
                 catch
                 { }
+            }
 
-                foreach (var file in Directory.GetFiles(ConfigLoader.ProjectConfigObj.ProjectPath))
+            foreach (var file in Directory.GetFiles(ConfigLoader.ProjectConfigObj.ProjectPath))
+            {
+                try
                 {
-                    try
-                    {
-                        if (passedImages.Contains(Path.GetFileName(file))) {
-                            continue;
-                        }
-
-                        MarkupImage img = new(file);
-                        Images.Add(img);
-                    }
-                    catch (FileFormatException)
+                    if (passedImages.Contains(Path.GetFileName(file)))
                     {
                         continue;
                     }
+
+                    MarkupImage img = new(file);
+                    Images.Add(img);
+                }
+                catch (FileFormatException)
+                {
+                    continue;
                 }
             }
         }

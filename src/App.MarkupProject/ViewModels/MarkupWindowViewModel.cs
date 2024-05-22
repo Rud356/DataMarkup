@@ -1,30 +1,20 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
 using System.Windows.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using App;
 using Prism.Regions;
 using Microsoft.Win32;
-using App.MarkupProject.Models.Interfaces;
 using App.MarkupProject.Models;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.IO;
-using System.Windows.Controls;
-using App.MarkupProject.Models;
+using System.Linq;
 using System.ComponentModel;
 using System.Windows.Media.Imaging;
-using App.Shared.Events;
-using Prism.Events;
 using App.ProjectSettings.Models;
 using App.ProjectSettings.Models.Interfaces;
+using App.MarkupProject.Models.Interfaces;
 
 namespace App.MarkupProject.ViewModels
 {
@@ -71,14 +61,17 @@ namespace App.MarkupProject.ViewModels
         public ICommand MoveFigureToolCommand { get; }
         public ICommand MovePointsToolCommand { get; }
         public ICommand GoBackCommand { get; set; }
-        public ICommand OnCanvasLoaded { get; set; }
         public ICommand MouseLeftButtonDownCommand { get; set; }
+
+        public IMarkupProject Project { get => _project; }
+
+        public ICommand OnCanvasLoadedCommand { get; set; }
 
         private IMarkupProject _project;
 
-        private MarkupImage _selectedImage;
+        private IMarkupImage _selectedImage;
 
-        public MarkupImage SelectedImage
+        public IMarkupImage SelectedImage
         {
             get => _selectedImage;
             set
@@ -108,6 +101,7 @@ namespace App.MarkupProject.ViewModels
             ChooseFigureToolCommand = new DelegateCommand(ExecuteChooseFigureTool);
             MoveFigureToolCommand = new DelegateCommand(ExecuteMoveFigureTool);
             MovePointsToolCommand = new DelegateCommand(ExecuteMovePointsTool);
+            OnCanvasLoadedCommand = new DelegateCommand<RoutedEventArgs>(OnCanvasLoaded);
 
             // Присваиваем переданный Canvas ImageCanvas
             ImageCanvas = imageCanvas;
@@ -115,27 +109,11 @@ namespace App.MarkupProject.ViewModels
             Rectangles.CollectionChanged += (s, e) => UpdateCanvas();
         }
 
-        private void ExecutePolygonTool()
-        {
-            SelectedTool = MarkupTool.Polygon;
-        }
-
-        private void ExecuteRectangleTool()
-        {
-            SelectedTool = MarkupTool.Rectangle;
-
-            // Подписываемся на событие MouseLeftButtonDown
-
-            var imagePath = "C:\\Users\\MSI RTX\\Desktop\\Учеба\\NewDataMarkup\\DataMarkup\\src\\App.MarkupProject\\Images\\testImage.png";
-            SelectedImage = new MarkupImage(imagePath);
-            UpdateCanvas();
-        }
-
         private void MouseLeftButtonDown(MouseButtonEventArgs e)
         {
             if (SelectedTool == MarkupTool.Rectangle)
             {
-                Point position = e.GetPosition((Image) e.Source);
+                Point position = e.GetPosition((Image)e.Source);
 
                 if (_firstPoint == null)
                 {
@@ -151,6 +129,27 @@ namespace App.MarkupProject.ViewModels
                     _firstPoint = null; // Сбросить первую точку для следующего прямоугольника
                 }
             }
+        }
+
+        private void ExecutePolygonTool()
+        {
+            SelectedTool = MarkupTool.Polygon;
+        }
+
+        private void ExecuteRectangleTool()
+        {
+            SelectedTool = MarkupTool.Rectangle;
+
+            // Подписываемся на событие MouseLeftButtonDown
+
+            SelectedImage = _project.Images[0];
+            UpdateCanvas();
+        }
+
+        private void OnCanvasLoaded(RoutedEventArgs e)
+        {
+            System.Console.WriteLine(e);
+            _imageCanvas = (Canvas) e.Source;
         }
 
         private void ExecuteDeleteTool()
@@ -175,34 +174,35 @@ namespace App.MarkupProject.ViewModels
 
         private void UpdateCanvas()
         {
-            if (SelectedImage != null)
+            // Clear unused canvas elements
+            foreach (UIElement item in _imageCanvas.Children)
             {
-                ImageCanvas.Children.Clear();
-
-                var image = new System.Windows.Controls.Image
+                if (item is Image)
                 {
-                    Source = new BitmapImage(new Uri(SelectedImage.ImagePath)),
-                    Stretch = Stretch.UniformToFill
+                    continue;
+                }
+
+                else
+                {
+                    _imageCanvas.Children.Remove(item);
+                }
+            }
+
+            foreach (var rectangle in Rectangles)
+            {
+                var topLeft = rectangle.Points[0];
+                var bottomRight = rectangle.Points[2];
+
+                var rect = new System.Windows.Shapes.Rectangle
+                {
+                    Width = bottomRight.Item1 - topLeft.Item1,
+                    Height = bottomRight.Item2 - topLeft.Item2,
+                    Stroke = Brushes.Red,
+                    StrokeThickness = 2,
+                    Margin = new Thickness(topLeft.Item1, topLeft.Item2, 0, 0)
                 };
 
-                ImageCanvas.Children.Add(image);
-
-                foreach (var rectangle in Rectangles)
-                {
-                    var topLeft = rectangle.Points[0];
-                    var bottomRight = rectangle.Points[2];
-
-                    var rect = new System.Windows.Shapes.Rectangle
-                    {
-                        Width = bottomRight.Item1 - topLeft.Item1,
-                        Height = bottomRight.Item2 - topLeft.Item2,
-                        Stroke = Brushes.Red,
-                        StrokeThickness = 2,
-                        Margin = new Thickness(topLeft.Item1, topLeft.Item2, 0, 0)
-                    };
-
-                    ImageCanvas.Children.Add(rect);
-                }
+                ImageCanvas.Children.Add(rect);
             }
         }
 

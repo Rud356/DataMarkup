@@ -54,6 +54,8 @@ namespace App.MarkupProject.Models
 
         [Reactive] public string ImagePath { get; }
 
+        public string Name { get => Path.GetFileName(ImagePath); }
+
         [Reactive] public bool IsIncludedInExport { get; set; }
 
         [Reactive] public ObservableCollection<IMarkupFigure> Markup { get => _imagesFigures; }
@@ -66,15 +68,15 @@ namespace App.MarkupProject.Models
                 throw new FileNotFoundException();
             }
 
-            string[] ALLOWED_EXTENSIONS = { ".jpeg", ".png" };
+            string[] ALLOWED_EXTENSIONS = { ".jpg", ".jpeg", ".png" };
             if (!ALLOWED_EXTENSIONS.Contains<string>(Path.GetExtension(path).ToLower()))
             {
                 throw new FileFormatException("Not allowed file format loaded");
             }
 
             var img = Bitmap.FromFile(path);
-            int docHeight = (int) (img.Height / img.VerticalResolution);
-            int docWidth = (int) (img.Width / img.HorizontalResolution);
+            int docHeight = img.Height;
+            int docWidth = img.Width;
 
             return new Tuple<int, int>(docWidth, docHeight);
         }

@@ -23,7 +23,7 @@
             <ListBox x:Name="imageListBox" Width="150" Margin="0,0,0,5" Height="373" 
                      ScrollViewer.VerticalScrollBarVisibility="Auto"
                      ItemsSource="{Binding Project.Images}" 
-                     DisplayMemberPath="ImagePath"
+                     DisplayMemberPath="Name"
                      SelectedItem="{Binding SelectedImage}"/>
         </StackPanel>
 
@@ -33,9 +33,10 @@
                 <Canvas Width="800" Height="600" Background="White">
                     <b:Interaction.Triggers>
                         <b:EventTrigger EventName="Loaded">
-                            <b:InvokeCommandAction Command="{Binding OnCanvasLoaded}" PassEventArgsToCommand="True"></b:InvokeCommandAction>
+                            <b:InvokeCommandAction Command="{Binding OnCanvasLoadedCommand}" PassEventArgsToCommand="True"></b:InvokeCommandAction>
                         </b:EventTrigger>
                     </b:Interaction.Triggers>
+
                     <Image x:Name="ImgDisplay" Source="{Binding SelectedImage.ImagePath}" Stretch="None">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="MouseLeftButtonDown">
