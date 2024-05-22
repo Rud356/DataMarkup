@@ -22,19 +22,18 @@
             <TextBlock Text="Загрузить изображение:" Margin="0,0,0,5"/>
             <ListBox x:Name="imageListBox" Width="150" Margin="0,0,0,5" Height="373" 
                      ScrollViewer.VerticalScrollBarVisibility="Auto"
-                     ItemsSource="{Binding Images}" 
+                     ItemsSource="{Binding Project.Images}" 
                      DisplayMemberPath="ImagePath"
                      SelectedItem="{Binding SelectedImage}"/>
         </StackPanel>
 
         <!-- Центральная часть: поле редактирования изображения -->
         <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1" Margin="5,5,5,5" Grid.ColumnSpan="3">
-            <!-- Здесь может быть элемент управления для редактирования изображения -->
-            <Canvas x:Name="ImageCanvas" Width="450" Height="350" Background="White">
-                <!-- Здесь автоматически биндится картинка -->
-                <Image Source="{Binding SelectedImage.ImagePath}"
-                       Stretch="UniformToFill" />
-            </Canvas>
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <Canvas x:Name="ImageCanvas" Width="800" Height="600" Background="White">
+                    <Image Source="{Binding SelectedImage.ImagePath}" Stretch="None" />
+                </Canvas>
+            </ScrollViewer>
         </Border>
 
         <!-- Правая часть: кнопки "Инструменты" и кнопка "Назад" -->
