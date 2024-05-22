@@ -7,20 +7,23 @@
              xmlns:viewmodels="clr-namespace:App.MarkupProject.ViewModels" xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewmodels:MarkupWindowViewModel}"
-             Height="450" Width="800">
-    <Grid>
+             Background="White"
+             d:DesignHeight="720" d:DesignWidth="1280">
+    <Grid HorizontalAlignment="Stretch">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="73*"/>
-            <ColumnDefinition Width="54*"/>
-            <ColumnDefinition Width="365*"/>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="10*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="1.5*"/>
         </Grid.ColumnDefinitions>
-
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"></RowDefinition>
+        </Grid.RowDefinitions>
+        
         <!-- Левая часть: поле загрузки изображений -->
         <StackPanel Grid.Column="0" VerticalAlignment="Top" Margin="5,5,5,0">
             <TextBlock Text="Загрузить изображение:" Margin="0,0,0,5"/>
-            <ListBox x:Name="imageListBox" Width="150" Margin="0,0,0,5" Height="373" 
+            <ListBox x:Name="imageListBox" HorizontalAlignment="Stretch" Margin="0,0,0,5"
                      ScrollViewer.VerticalScrollBarVisibility="Auto"
                      ItemsSource="{Binding Project.Images}" 
                      DisplayMemberPath="Name"
@@ -28,9 +31,9 @@
         </StackPanel>
 
         <!-- Центральная часть: поле редактирования изображения -->
-        <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1" Margin="5,5,5,5" Grid.ColumnSpan="3">
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <Canvas Width="800" Height="600" Background="White">
+        <Border Grid.Column="1" Grid.ColumnSpan="1" BorderBrush="Black" BorderThickness="1" Margin="5,5,5,5">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="Transparent" Margin="5,5,5,5">
+                <Canvas Background="White" LayoutTransform="{Binding Scale}">
                     <b:Interaction.Triggers>
                         <b:EventTrigger EventName="Loaded">
                             <b:InvokeCommandAction Command="{Binding OnCanvasLoadedCommand}" PassEventArgsToCommand="True"></b:InvokeCommandAction>
@@ -44,14 +47,13 @@
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
                     </Image>
-                    
                 </Canvas>
             </ScrollViewer>
         </Border>
 
         <!-- Правая часть: кнопки "Инструменты" и кнопка "Назад" -->
-        <StackPanel Grid.Column="4" VerticalAlignment="Top" Margin="5,5,5,0">
-            <Button Command="{Binding GoBackCommand}" Content="Назад" Margin="0,0,0,5"/>
+        <StackPanel Grid.Column="2" VerticalAlignment="Top" Margin="5,5,5,0" HorizontalAlignment="Stretch">
+            
             <TextBlock Text="Инструменты:" Margin="0,0,0,5"/>
             <Button Content="Полигон" Margin="0,0,0,5" Command="{Binding PolygonToolCommand}"/>
             <Button Content="Прямоугольник" Margin="0,0,0,5" Command="{Binding RectangleToolCommand}" />
@@ -59,20 +61,28 @@
             <Button Content="Перемещение точек" Margin="0,0,0,5" Command="{Binding MovePointsToolCommand}"/>
             <Button Content="Удаление фигуры" Margin="0,0,0,5" Command="{Binding DeleteToolCommand}"/>
             <Button Content="Выбор фигуры" Margin="0,0,0,5" Command="{Binding ChooseFigureToolCommand}"/>
+            
+            <TextBlock Text="Выход:" Margin="0,0,0,5"/>
+            <Button Command="{Binding GoBackCommand}" Content="Закрыть проект" Margin="0,0,0,5"/>
         </StackPanel>
 
         <!-- Правая часть: поле для отображения текущей разметки -->
-        <StackPanel Grid.Column="4" VerticalAlignment="Top" Margin="5,349,5,0">
-            <TextBlock Text="Текущая разметка:" Margin="0,0,0,5"/>
-            <TextBlock Text="Разметка 1" Margin="0,0,0,5"/>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Класс:" Margin="0,0,5,0"/>
-                <TextBox Width="100"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <Button Content="Скрыть" Margin="0,0,5,0"/>
-                <Button Content="Показать"/>
-            </StackPanel>
+        <StackPanel Grid.Column="3" Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top" Margin="5,5,5,0">
+            <ListBox Grid.Column="3" Name="Markups" ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch" ItemsSource="{Binding SelectedImage.Markup}">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            
         </StackPanel>
+        
     </Grid>
 </UserControl>

@@ -31,13 +31,6 @@ namespace App.MarkupProject.ViewModels
     internal class MarkupWindowViewModel : BindableBase
     {
         private Point? _firstPoint = null; // Первая точка для создания прямоугольника
-        private ObservableCollection<Rectangle> _rectangles = new ObservableCollection<Rectangle>();
-
-        public ObservableCollection<Rectangle> Rectangles
-        {
-            get => _rectangles;
-            set => SetProperty(ref _rectangles, value);
-        }
 
         private MarkupTool _selectedTool;
         public MarkupTool SelectedTool
@@ -53,6 +46,8 @@ namespace App.MarkupProject.ViewModels
             get { return _imageCanvas; }
             set { SetProperty(ref _imageCanvas, value); }
         }
+
+        public ScaleTransform Scale { get; } = new ScaleTransform();
 
         public ICommand PolygonToolCommand { get; }
         public ICommand RectangleToolCommand { get; }
@@ -105,8 +100,6 @@ namespace App.MarkupProject.ViewModels
 
             // Присваиваем переданный Canvas ImageCanvas
             ImageCanvas = imageCanvas;
-
-            Rectangles.CollectionChanged += (s, e) => UpdateCanvas();
         }
 
         private void MouseLeftButtonDown(MouseButtonEventArgs e)
@@ -125,8 +118,9 @@ namespace App.MarkupProject.ViewModels
                     var bottomRight = new Tuple<int, int>((int)position.X, (int)position.Y);
                     var rectangle = new Rectangle(new Tuple<int, int, int, int>(topLeft.Item1, topLeft.Item2, bottomRight.Item1, bottomRight.Item2), 0);
 
-                    Rectangles.Add(rectangle);
+                    SelectedImage.Markup.Add(rectangle);
                     _firstPoint = null; // Сбросить первую точку для следующего прямоугольника
+                    UpdateCanvas();
                 }
             }
         }
@@ -134,14 +128,13 @@ namespace App.MarkupProject.ViewModels
         private void ExecutePolygonTool()
         {
             SelectedTool = MarkupTool.Polygon;
+            Scale.ScaleY *= 1.1;
+            Scale.ScaleX *= 1.1;
         }
 
         private void ExecuteRectangleTool()
         {
             SelectedTool = MarkupTool.Rectangle;
-
-            // Подписываемся на событие MouseLeftButtonDown
-
             SelectedImage = _project.Images[0];
             UpdateCanvas();
         }
@@ -175,34 +168,29 @@ namespace App.MarkupProject.ViewModels
         private void UpdateCanvas()
         {
             // Clear unused canvas elements
-            foreach (UIElement item in _imageCanvas.Children)
+            Image img = (Image)ImageCanvas.Children[0];
+            ImageCanvas.Children.Clear();
+            ImageCanvas.Children.Add(img);
+
+            foreach (var markup in SelectedImage.Markup)
             {
-                if (item is Image)
+                if (markup is Rectangle)
                 {
-                    continue;
+                    Rectangle rectangle = (Rectangle)markup;
+                    var topLeft = rectangle.Points[0];
+                    var bottomRight = rectangle.Points[2];
+
+                    var rect = new System.Windows.Shapes.Rectangle
+                    {
+                        Width = bottomRight.Item1 - topLeft.Item1,
+                        Height = bottomRight.Item2 - topLeft.Item2,
+                        Stroke = Brushes.Red,
+                        StrokeThickness = 2,
+                        Margin = new Thickness(topLeft.Item1, topLeft.Item2, 0, 0)
+                    };
+
+                    ImageCanvas.Children.Add(rect);
                 }
-
-                else
-                {
-                    _imageCanvas.Children.Remove(item);
-                }
-            }
-
-            foreach (var rectangle in Rectangles)
-            {
-                var topLeft = rectangle.Points[0];
-                var bottomRight = rectangle.Points[2];
-
-                var rect = new System.Windows.Shapes.Rectangle
-                {
-                    Width = bottomRight.Item1 - topLeft.Item1,
-                    Height = bottomRight.Item2 - topLeft.Item2,
-                    Stroke = Brushes.Red,
-                    StrokeThickness = 2,
-                    Margin = new Thickness(topLeft.Item1, topLeft.Item2, 0, 0)
-                };
-
-                ImageCanvas.Children.Add(rect);
             }
         }
 

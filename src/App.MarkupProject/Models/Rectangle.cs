@@ -15,14 +15,16 @@ namespace App.MarkupProject.Models
 
         public Rectangle(Tuple<int, int, int, int> bbox, int classID) : base(classID)
         {
+            _cachedPositions = new();
+            var _ = new Tuple<int, int>(0, 0);
+            _cachedPositions.Add(_);
+            _cachedPositions.Add(_);
+            _cachedPositions.Add(_);
+            _cachedPositions.Add(_);
+
             _topCorner = new Tuple<int, int>(bbox.Item1, bbox.Item2);
             _bottomCorner = new Tuple<int, int>(bbox.Item3, bbox.Item4);
-            _cachedPositions = new();
-            var tmp = recalculatePoints();
-            _cachedPositions.Add(tmp.Item1);
-            _cachedPositions.Add(tmp.Item2);
-            _cachedPositions.Add(tmp.Item3);
-            _cachedPositions.Add(tmp.Item4);
+            setCorners(_topCorner, _bottomCorner);
         }
 
         [Reactive]
@@ -91,10 +93,19 @@ namespace App.MarkupProject.Models
             Tuple<int, int>,
             Tuple<int, int>
         > recalculatePoints(Tuple<int, int> topCorner, Tuple<int, int> bottomCorner) {
-            if (topCorner.Item1 < bottomCorner.Item1)
-            { 
-                (topCorner, bottomCorner) = (bottomCorner, topCorner);
-            }
+            List<int> xs = new List<int>();
+            xs.Add(topCorner.Item1);
+            xs.Add(bottomCorner.Item1);
+
+            List<int> ys = new List<int>();
+            ys.Add(topCorner.Item2);
+            ys.Add(bottomCorner.Item2);
+
+            xs.Sort();
+            ys.Sort();
+
+            topCorner = new Tuple<int, int>(xs[0], ys[0]);
+            bottomCorner = new Tuple<int, int>(xs[1], ys[1]);
 
             return new Tuple<
                 Tuple<int, int>,
