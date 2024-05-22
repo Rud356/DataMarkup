@@ -30,13 +30,20 @@
         <!-- Центральная часть: поле редактирования изображения -->
         <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1" Margin="5,5,5,5" Grid.ColumnSpan="3">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <Canvas x:Name="ImageCanvas" Width="800" Height="600" Background="White">
-                    <Image Source="{Binding SelectedImage.ImagePath}" Stretch="None" />
+                <Canvas Width="800" Height="600" Background="White">
                     <b:Interaction.Triggers>
-                        <b:EventTrigger EventName="MouseLeftButtonDown">
-                            <b:InvokeCommandAction Command="{Binding MouseLeftButtonDownCommand}" PassEventArgsToCommand="True"></b:InvokeCommandAction>
+                        <b:EventTrigger EventName="Loaded">
+                            <b:InvokeCommandAction Command="{Binding OnCanvasLoaded}" PassEventArgsToCommand="True"></b:InvokeCommandAction>
                         </b:EventTrigger>
                     </b:Interaction.Triggers>
+                    <Image x:Name="ImgDisplay" Source="{Binding SelectedImage.ImagePath}" Stretch="None">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="MouseLeftButtonDown">
+                                <b:InvokeCommandAction Command="{Binding MouseLeftButtonDownCommand}" PassEventArgsToCommand="True"></b:InvokeCommandAction>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                    </Image>
+                    
                 </Canvas>
             </ScrollViewer>
         </Border>

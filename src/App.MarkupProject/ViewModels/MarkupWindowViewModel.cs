@@ -71,7 +71,7 @@ namespace App.MarkupProject.ViewModels
         public ICommand MoveFigureToolCommand { get; }
         public ICommand MovePointsToolCommand { get; }
         public ICommand GoBackCommand { get; set; }
-
+        public ICommand OnCanvasLoaded { get; set; }
         public ICommand MouseLeftButtonDownCommand { get; set; }
 
         private IMarkupProject _project;
@@ -135,7 +135,7 @@ namespace App.MarkupProject.ViewModels
         {
             if (SelectedTool == MarkupTool.Rectangle)
             {
-                Point position = e.GetPosition(ImageCanvas);
+                Point position = e.GetPosition((Image) e.Source);
 
                 if (_firstPoint == null)
                 {

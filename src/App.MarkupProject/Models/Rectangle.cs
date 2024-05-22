@@ -18,14 +18,27 @@ namespace App.MarkupProject.Models
             _topCorner = new Tuple<int, int>(bbox.Item1, bbox.Item2);
             _bottomCorner = new Tuple<int, int>(bbox.Item3, bbox.Item4);
             _cachedPositions = new();
+            var tmp = recalculatePoints();
+            _cachedPositions.Add(tmp.Item1);
+            _cachedPositions.Add(tmp.Item2);
+            _cachedPositions.Add(tmp.Item3);
+            _cachedPositions.Add(tmp.Item4);
         }
 
         [Reactive]
         new public ObservableCollection<Tuple<int, int>> Points
         {
             get {
-                if (_cachedPositions is not null) return _cachedPositions;
-                else recalculatePoints();
+                if (_cachedPositions is not null && _cachedPositions.Count() <= 0) return _cachedPositions;
+                else
+                {
+                    _cachedPositions.Clear();
+                    var tmp = recalculatePoints();
+                    _cachedPositions.Add(tmp.Item1);
+                    _cachedPositions.Add(tmp.Item2);
+                    _cachedPositions.Add(tmp.Item3);
+                    _cachedPositions.Add(tmp.Item4);
+                }
                 return _cachedPositions;
             }
         }
