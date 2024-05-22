@@ -72,6 +72,8 @@ namespace App.MarkupProject.ViewModels
         public ICommand MovePointsToolCommand { get; }
         public ICommand GoBackCommand { get; set; }
 
+        public ICommand MouseLeftButtonDownCommand { get; set; }
+
         private IMarkupProject _project;
 
         private MarkupImage _selectedImage;
@@ -89,6 +91,7 @@ namespace App.MarkupProject.ViewModels
 
         public MarkupWindowViewModel(IRegionManager regionManager, Canvas imageCanvas)
         {
+            MouseLeftButtonDownCommand = new DelegateCommand<MouseButtonEventArgs>(MouseLeftButtonDown);
             GoBackCommand = new DelegateCommand(() =>
             {
                 regionManager.RequestNavigate("MainRegion", "MainView");
@@ -122,18 +125,17 @@ namespace App.MarkupProject.ViewModels
             SelectedTool = MarkupTool.Rectangle;
 
             // Подписываемся на событие MouseLeftButtonDown
-            ImageCanvas.MouseLeftButtonDown += ImageCanvas_MouseLeftButtonDown;
 
             var imagePath = "C:\\Users\\MSI RTX\\Desktop\\Учеба\\NewDataMarkup\\DataMarkup\\src\\App.MarkupProject\\Images\\testImage.png";
             SelectedImage = new MarkupImage(imagePath);
             UpdateCanvas();
         }
 
-        private void ImageCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void MouseLeftButtonDown(MouseButtonEventArgs e)
         {
             if (SelectedTool == MarkupTool.Rectangle)
             {
-                Point position = e.GetPosition((IInputElement)sender);
+                Point position = e.GetPosition(ImageCanvas);
 
                 if (_firstPoint == null)
                 {

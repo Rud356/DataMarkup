@@ -23,7 +23,11 @@ namespace App.MarkupProject.Models
         [Reactive]
         new public ObservableCollection<Tuple<int, int>> Points
         {
-            get => _cachedPositions;
+            get {
+                if (_cachedPositions is not null) return _cachedPositions;
+                else recalculatePoints();
+                return _cachedPositions;
+            }
         }
 
         public void setCorners(Tuple<int, int> topCorner, Tuple<int, int> bottomCorner)
