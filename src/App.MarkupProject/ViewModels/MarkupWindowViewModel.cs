@@ -219,6 +219,10 @@ namespace App.MarkupProject.ViewModels
 
             foreach (var markup in SelectedImage.Markup)
             {
+                if (markup.IsHidden)
+                    // Skip rendering
+                    continue;
+
                 if (markup is Rectangle)
                 {
                     Rectangle rectangle = (Rectangle)markup;
@@ -239,7 +243,7 @@ namespace App.MarkupProject.ViewModels
             }
         }
 
-        private IMarkupProject ExecuteLoadProject(bool showDialog = true)
+        private IMarkupProject? ExecuteLoadProject(bool showDialog = true)
         {
             var dialog = new OpenFileDialog
             {
@@ -253,7 +257,7 @@ namespace App.MarkupProject.ViewModels
             bool? result = showDialog ? dialog.ShowDialog() : true;
             if (result != true) return null;
 
-            string selectedFolder = Path.GetDirectoryName(dialog.FileName);
+            string? selectedFolder = Path.GetDirectoryName(dialog.FileName);
             if (selectedFolder == null) return null;
 
             IProjectConfigLoader configLoader;
@@ -266,7 +270,10 @@ namespace App.MarkupProject.ViewModels
             }
             catch (Exception)
             {
-                File.WriteAllText(Path.Combine(selectedFolder, "config.cfg"), ProjectConfigLoader.DefaultConfigString());
+                File.WriteAllText(
+                    Path.Combine(selectedFolder, "config.cfg"),
+                    ProjectConfigLoader.DefaultConfigString()
+                );
                 return ExecuteLoadProject(false);
             }
 
