@@ -132,8 +132,7 @@ namespace App.MarkupProject.ViewModels
         private void ExecutePolygonTool()
         {
             SelectedTool = MarkupTool.Polygon;
-            Scale.ScaleY *= 1.9;
-            Scale.ScaleX *= 1.9;
+            _firstPoint = null;
         }
 
         private void ExecuteRectangleTool()
