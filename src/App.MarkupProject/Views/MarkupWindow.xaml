@@ -49,6 +49,9 @@
                         <b:EventTrigger EventName="Loaded">
                             <b:InvokeCommandAction Command="{Binding OnScrollViewLoadedCommand}" PassEventArgsToCommand="True"></b:InvokeCommandAction>
                         </b:EventTrigger>
+                        <b:EventTrigger EventName="KeyDown">
+                            <b:InvokeCommandAction Command="{Binding CanvasKeyStrokeCommand}" PassEventArgsToCommand="True"></b:InvokeCommandAction>
+                        </b:EventTrigger>
                     </b:Interaction.Triggers>
 
                     <Canvas Background="White" Height="{Binding SelectedImage.Resolution.Item1}" Width="{Binding SelectedImage.Resolution.Item2}" LayoutTransform="{Binding Scale}">

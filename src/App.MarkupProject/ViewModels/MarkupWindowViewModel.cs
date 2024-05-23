@@ -3,19 +3,15 @@ using Prism.Mvvm;
 using System.Windows.Input;
 using Prism.Regions;
 using Microsoft.Win32;
-using App.MarkupProject.Models;
-using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.IO;
-using System.Linq;
 using System.ComponentModel;
-using System.Windows.Media.Imaging;
 using App.ProjectSettings.Models;
 using App.ProjectSettings.Models.Interfaces;
 using App.MarkupProject.Models.Interfaces;
-using System.Windows.Media.Media3D;
+
 
 namespace App.MarkupProject.ViewModels
 {
@@ -32,6 +28,8 @@ namespace App.MarkupProject.ViewModels
     internal class MarkupWindowViewModel : BindableBase
     {
         private Point? _firstPoint = null; // Первая точка для создания прямоугольника
+
+        private Models.Polygon? tempPoly = null;
 
         private MarkupTool _selectedTool;
         public MarkupTool SelectedTool
@@ -71,6 +69,8 @@ namespace App.MarkupProject.ViewModels
         public ICommand GoBackCommand { get; set; }
         public ICommand MouseLeftButtonDownCommand { get; set; }
         public ICommand MouseWheelCommand { get; }
+
+        public ICommand CanvasKeyStrokeCommand { get; }
 
         public ICommand OnCanvasLoadedCommand { get; set; }
 
@@ -117,9 +117,11 @@ namespace App.MarkupProject.ViewModels
             OnCanvasLoadedCommand = new DelegateCommand<RoutedEventArgs>(OnCanvasLoaded);
             OnScrollViewLoadedCommand = new DelegateCommand<RoutedEventArgs>(OnScrollViewLoaded);
             MouseWheelCommand = new DelegateCommand<MouseWheelEventArgs>(OnMouseWheel);
-
+            CanvasKeyStrokeCommand = new DelegateCommand<KeyEventArgs>(OnKeyStrokeEvent);
             // Присваиваем переданный Canvas ImageCanvas
             ImageCanvas = imageCanvas;
+            if (Project.ConfigLoader.ProjectConfigObj.MarkupClasses.Count() != 0)
+                SelectedMarkupClass = Project.ConfigLoader.ProjectConfigObj.MarkupClasses.ElementAt(0);
         }
 
         private void OnMouseWheel(MouseWheelEventArgs e)
@@ -145,23 +147,100 @@ namespace App.MarkupProject.ViewModels
 
         private void MouseLeftButtonDown(MouseButtonEventArgs e)
         {
-            if (SelectedTool == MarkupTool.Rectangle)
+            switch (SelectedTool)
             {
-                Point position = e.GetPosition((Image)e.Source);
-
-                if (_firstPoint == null)
+                case MarkupTool.Rectangle:
                 {
-                    _firstPoint = position;
+                    Point position = e.GetPosition((Image)e.Source);
+                    int SelectedClassID = Project.ConfigLoader.ProjectConfigObj.MarkupClasses.IndexOf(SelectedMarkupClass);
+                    if (SelectedClassID < 0) 
+                    {
+                        return;
+                    }
+                    if (_firstPoint == null)
+                    {
+                        _firstPoint = position;
+                    }
+                    else
+                    {
+                        var topLeft = new Tuple<int, int>((int)_firstPoint.Value.X, (int)_firstPoint.Value.Y);
+                        var bottomRight = new Tuple<int, int>((int)position.X, (int)position.Y);
+                        var rectangle = new Models.Rectangle(
+                            new Tuple<int, int, int, int>
+                                (topLeft.Item1, topLeft.Item2, bottomRight.Item1, bottomRight.Item2), 0
+                        );
+
+                        SelectedImage.Markup.Add(rectangle);
+                        _firstPoint = null; // Сбросить первую точку для следующего прямоугольника
+                        UpdateCanvas();
+                    }
+                    break;
                 }
-                else
-                {
-                    var topLeft = new Tuple<int, int>((int)_firstPoint.Value.X, (int)_firstPoint.Value.Y);
-                    var bottomRight = new Tuple<int, int>((int)position.X, (int)position.Y);
-                    var rectangle = new Rectangle(new Tuple<int, int, int, int>(topLeft.Item1, topLeft.Item2, bottomRight.Item1, bottomRight.Item2), 0);
 
-                    SelectedImage.Markup.Add(rectangle);
-                    _firstPoint = null; // Сбросить первую точку для следующего прямоугольника
+                case MarkupTool.Polygon:
+                {
+                        if (tempPoly == null)
+                        {
+                            tempPoly = new Models.Polygon();
+                        }
+
+                        Point position = e.GetPosition((Image)e.Source);
+                        Tuple<int, int>? previous = null;
+                        try
+                        {
+                            previous = tempPoly.Points.Last();
+                        }
+                        catch (Exception ex) { } // Silencing error
+
+                        tempPoly.Points.Add(new Tuple<int, int>((int)position.X, (int)position.Y));
+
+                        if (previous is not null)
+                        {
+                            
+                            var point = tempPoly.Points.Last();
+
+                            var line = new System.Windows.Shapes.Line()
+                            {
+                                Stroke = System.Windows.Media.Brushes.BlueViolet,
+                                X1 = previous.Item1,
+                                Y1 = previous.Item2,
+                                X2 = point.Item1,
+                                Y2 = point.Item2
+                            };
+                            ImageCanvas.Children.Add(line);
+                        }
+
+                        break;
+                }
+            }
+        }
+
+        private void OnKeyStrokeEvent(KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                if (SelectedTool == MarkupTool.Polygon && tempPoly is not null && tempPoly.Points.Count() >= 3)
+                {
+                    SelectedImage.Markup.Add(tempPoly);
+                    tempPoly = null;
                     UpdateCanvas();
+                }
+            }
+
+            if (e.Key == Key.Escape)
+            {
+                tempPoly = null;
+                _firstPoint = null;
+                UpdateCanvas();
+            }
+
+            if (e.Key == Key.Z && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                if (tempPoly is not null && tempPoly.Points.Count() > 0)
+                {
+                    // Remove last added poly line
+                    tempPoly.Points.RemoveAt(tempPoly.Points.Count()-1);
+                    ImageCanvas.Children.RemoveAt(ImageCanvas.Children.Count-1);
                 }
             }
         }
@@ -183,6 +262,9 @@ namespace App.MarkupProject.ViewModels
         private void OnCanvasLoaded(RoutedEventArgs e)
         {
             _imageCanvas = (Canvas) e.Source;
+
+            if (Project.Images.Count() > 0)
+                SelectedImage = Project.Images.ElementAt(0);
         }
 
         private void OnScrollViewLoaded(RoutedEventArgs e)
@@ -223,23 +305,47 @@ namespace App.MarkupProject.ViewModels
                     // Skip rendering
                     continue;
 
-                if (markup is Rectangle)
+                if (markup is Models.Rectangle)
                 {
-                    Rectangle rectangle = (Rectangle)markup;
+                    Models.Rectangle rectangle = (Models.Rectangle)markup;
                     var topLeft = rectangle.Points[0];
                     var bottomRight = rectangle.Points[2];
-
-                    var rect = new System.Windows.Shapes.Rectangle
-                    {
-                        Width = bottomRight.Item1 - topLeft.Item1,
-                        Height = bottomRight.Item2 - topLeft.Item2,
-                        Stroke = Brushes.Red,
-                        StrokeThickness = 2,
-                        Margin = new Thickness(topLeft.Item1, topLeft.Item2, 0, 0)
-                    };
-
-                    ImageCanvas.Children.Add(rect);
+                    DrawRectangle(ImageCanvas, topLeft, bottomRight);
                 }
+
+                if (markup is Models.Polygon)
+                {
+                    Models.Polygon polygon = (Models.Polygon)markup;
+                    DrawPolygon(ImageCanvas, polygon.Points);
+                }
+            }
+        }
+
+        private void DrawRectangle(Canvas canvas, Tuple<int, int> topCorner, Tuple<int, int> bottomCorner)
+        {
+            var rect = new System.Windows.Shapes.Rectangle
+            {
+                Width = bottomCorner.Item1 - topCorner.Item1,
+                Height = bottomCorner.Item2 - topCorner.Item2,
+                Stroke = Brushes.Red,
+                StrokeThickness = 2,
+                Margin = new Thickness(topCorner.Item1, topCorner.Item2, 0, 0)
+            };
+            canvas.Children.Add(rect);
+        }
+
+        private void DrawPolygon(Canvas canvas, IEnumerable<Tuple<int, int>> points)
+        {
+            var previous = points.Last();
+            foreach (var point in points)
+            {
+                var line = new System.Windows.Shapes.Line() {
+                    Stroke = Brushes.BlueViolet,
+                    X1 = previous.Item1, Y1 = previous.Item2, 
+                    X2 = point.Item1, Y2 = point.Item2
+                };
+                previous = point;
+                canvas.Children.Add(line);
             }
         }
 
@@ -257,7 +363,7 @@ namespace App.MarkupProject.ViewModels
             bool? result = showDialog ? dialog.ShowDialog() : true;
             if (result != true) return null;
 
-            string? selectedFolder = Path.GetDirectoryName(dialog.FileName);
+            string? selectedFolder = System.IO.Path.GetDirectoryName(dialog.FileName);
             if (selectedFolder == null) return null;
 
             IProjectConfigLoader configLoader;
@@ -271,7 +377,7 @@ namespace App.MarkupProject.ViewModels
             catch (Exception)
             {
                 File.WriteAllText(
-                    Path.Combine(selectedFolder, "config.cfg"),
+                    System.IO.Path.Combine(selectedFolder, "config.cfg"),
                     ProjectConfigLoader.DefaultConfigString()
                 );
                 return ExecuteLoadProject(false);
