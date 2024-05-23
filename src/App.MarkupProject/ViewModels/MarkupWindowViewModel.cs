@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using App.ProjectSettings.Models;
 using App.ProjectSettings.Models.Interfaces;
 using App.MarkupProject.Models.Interfaces;
+using System.Windows.Media.Media3D;
 
 namespace App.MarkupProject.ViewModels
 {
@@ -47,6 +48,14 @@ namespace App.MarkupProject.ViewModels
             set { SetProperty(ref _imageCanvas, value); }
         }
 
+        private ScrollViewer _scrollViewer;
+
+        public ScrollViewer MainScrollViewer
+        {
+            get { return _scrollViewer; }
+            set { SetProperty(ref _scrollViewer, value); }
+        }
+
         public double ScrollViewWidth { get => ImageCanvas.ActualWidth - 100; }
 
         public double ScrollViewHeight { get => ImageCanvas.ActualHeight - 100; }
@@ -61,12 +70,15 @@ namespace App.MarkupProject.ViewModels
         public ICommand MovePointsToolCommand { get; }
         public ICommand GoBackCommand { get; set; }
         public ICommand MouseLeftButtonDownCommand { get; set; }
-
-        public IMarkupProject Project { get => _project; }
+        public ICommand MouseWheelCommand { get; }
 
         public ICommand OnCanvasLoadedCommand { get; set; }
 
+        public ICommand OnScrollViewLoadedCommand {  get; set; }
+
         private IMarkupProject _project;
+
+        public IMarkupProject Project { get => _project; }
 
         private IMarkupImage _selectedImage;
 
@@ -80,6 +92,8 @@ namespace App.MarkupProject.ViewModels
                 UpdateCanvas();
             }
         }
+
+        public string SelectedMarkupClass { get; set; }
 
         public MarkupWindowViewModel(IRegionManager regionManager, Canvas imageCanvas)
         {
@@ -101,9 +115,32 @@ namespace App.MarkupProject.ViewModels
             MoveFigureToolCommand = new DelegateCommand(ExecuteMoveFigureTool);
             MovePointsToolCommand = new DelegateCommand(ExecuteMovePointsTool);
             OnCanvasLoadedCommand = new DelegateCommand<RoutedEventArgs>(OnCanvasLoaded);
+            OnScrollViewLoadedCommand = new DelegateCommand<RoutedEventArgs>(OnScrollViewLoaded);
+            MouseWheelCommand = new DelegateCommand<MouseWheelEventArgs>(OnMouseWheel);
 
             // Присваиваем переданный Canvas ImageCanvas
             ImageCanvas = imageCanvas;
+        }
+
+        private void OnMouseWheel(MouseWheelEventArgs e)
+        {
+            const double SCALE_K = 1.1;
+            Point position = e.GetPosition(ImageCanvas);
+            Scale.CenterX = position.X;
+            Scale.CenterY = position.Y;
+
+            if (e.Delta > 0)
+            {
+                Scale.ScaleX = Scale.ScaleX * SCALE_K;
+                Scale.ScaleY = Scale.ScaleY * SCALE_K;
+            }
+            else
+            {
+                Scale.ScaleX = Scale.ScaleX / SCALE_K;
+                Scale.ScaleY = Scale.ScaleY / SCALE_K;
+            }
+            
+            e.Handled = true;
         }
 
         private void MouseLeftButtonDown(MouseButtonEventArgs e)
@@ -133,19 +170,24 @@ namespace App.MarkupProject.ViewModels
         {
             SelectedTool = MarkupTool.Polygon;
             _firstPoint = null;
+            UpdateCanvas();
         }
 
         private void ExecuteRectangleTool()
         {
             SelectedTool = MarkupTool.Rectangle;
-            SelectedImage = _project.Images[0];
+            _firstPoint = null;
             UpdateCanvas();
         }
 
         private void OnCanvasLoaded(RoutedEventArgs e)
         {
-            System.Console.WriteLine(e);
             _imageCanvas = (Canvas) e.Source;
+        }
+
+        private void OnScrollViewLoaded(RoutedEventArgs e)
+        {
+            _scrollViewer = (ScrollViewer)e.Source;
         }
 
         private void ExecuteDeleteTool()

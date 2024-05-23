@@ -13,6 +13,7 @@ using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.Drawing;
 using System.Windows.Media;
+using System.DirectoryServices;
 
 namespace App.MarkupProject.Models
 {
@@ -77,7 +78,7 @@ namespace App.MarkupProject.Models
             var img = Bitmap.FromFile(path);
             int docHeight = img.Height;
             int docWidth = img.Width;
-
+            img.Dispose();
             return new Tuple<int, int>(docWidth, docHeight);
         }
     }

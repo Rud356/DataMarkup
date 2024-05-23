@@ -42,13 +42,20 @@
             <!-- Центральная часть: поле редактирования изображения -->
             <Border Grid.Column="1" Grid.ColumnSpan="1" BorderBrush="Black" BorderThickness="1" Margin="5,5,5,5">
                 <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,5,5,5">
+                    <b:Interaction.Triggers>
+                        <b:EventTrigger EventName="PreviewMouseWheel">
+                            <b:InvokeCommandAction Command="{Binding MouseWheelCommand}" PassEventArgsToCommand="True" />
+                        </b:EventTrigger>
+                        <b:EventTrigger EventName="Loaded">
+                            <b:InvokeCommandAction Command="{Binding OnScrollViewLoadedCommand}" PassEventArgsToCommand="True"></b:InvokeCommandAction>
+                        </b:EventTrigger>
+                    </b:Interaction.Triggers>
+
                     <Canvas Background="White" Height="{Binding SelectedImage.Resolution.Item1}" Width="{Binding SelectedImage.Resolution.Item2}" LayoutTransform="{Binding Scale}">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="Loaded">
                                 <b:InvokeCommandAction Command="{Binding OnCanvasLoadedCommand}" PassEventArgsToCommand="True"></b:InvokeCommandAction>
                             </b:EventTrigger>
-
-
                         </b:Interaction.Triggers>
 
                         <Image x:Name="ImgDisplay" Source="{Binding SelectedImage.ImagePath}" Stretch="None">
@@ -64,12 +71,17 @@
         </Grid>
         <!-- Правая часть: кнопки "Инструменты" и кнопка "Назад" -->
         <StackPanel Grid.Column="2" VerticalAlignment="Top" Margin="5,5,5,0" HorizontalAlignment="Stretch">
-            <TextBlock Text="Инструменты:" Margin="0,0,0,5"/>
+            <TextBlock Text="Выбор класса для разметки:" Margin="5,0,0,5"/>
+            <ComboBox ItemsSource="{Binding Project.ConfigLoader.ProjectConfigObj.MarkupClasses}"
+                      SelectedItem="{Binding SelectedMarkupClass}"/>
+
+
+            <TextBlock Text="Инструменты:" Margin="5,0,0,5"/>
             <Button Content="Полигон" Margin="0,0,0,5" Command="{Binding PolygonToolCommand}"/>
             <Button Content="Прямоугольник" Margin="0,0,0,5" Command="{Binding RectangleToolCommand}" />
             <Button Content="Перемещение фигуры" Margin="0,0,0,5" Command="{Binding MoveFigureToolCommand}"/>
             <Button Content="Перемещение точек" Margin="0,0,0,5" Command="{Binding MovePointsToolCommand}"/>
-            <Button Content="Удаление фигуры" Margin="0,0,0,5" Command="{Binding DeleteToolCommand}"/>
+            <Button Content="Удаление точек" Margin="0,0,0,5" Command="{Binding DeleteToolCommand}"/>
             <Button Content="Выбор фигуры" Margin="0,0,0,5" Command="{Binding ChooseFigureToolCommand}"/>
             
             <TextBlock Text="Выход:" Margin="0,0,0,5"/>

@@ -105,7 +105,7 @@ namespace App.ProjectSettings.Models
 
         public static string DefaultConfigString()
         {
-            return /*lang=json*/ "{\"ProjectName\": \"Default Name\", \"excludedImages\": [], \"markupClasses\": [], \"dataFormatter\": \"CocoDataset\"}";
+            return /*lang=json*/ "{\"ProjectName\": \"Default Name\", \"excludedImages\": [], \"markupClasses\": [\"Default\"], \"dataFormatter\": \"CocoDataset\"}";
         }
     }
 }
