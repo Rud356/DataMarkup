@@ -11,6 +11,11 @@ using System.ComponentModel;
 using App.ProjectSettings.Models;
 using App.ProjectSettings.Models.Interfaces;
 using App.MarkupProject.Models.Interfaces;
+using System.Collections.ObjectModel;
+using App.MarkupProject.Models;
+using App.ProjectSettings.DTO;
+using System.Linq;
+using System.Reactive.Linq;
 
 
 namespace App.MarkupProject.ViewModels
@@ -90,6 +95,19 @@ namespace App.MarkupProject.ViewModels
         }
 
         public string SelectedMarkupClass { get; set; }
+
+        public ObservableCollection<Polygon>? Polygons {
+            get => (ObservableCollection<Polygon>) SelectedImage?.Markup.Where(
+                markup => markup.GetType() == typeof(Models.Polygon)
+            ).OfType<Polygon>().ToObservable();
+        }
+
+        public ObservableCollection<Polygon>? Rectangles
+        {
+            get => (ObservableCollection<Polygon>)SelectedImage?.Markup.Where(
+                markup => markup.GetType() == typeof(Models.Rectangle)
+            ).OfType<Rectangle>().ToObservable();
+        }
 
         public MarkupWindowViewModel(IRegionManager regionManager, Canvas imageCanvas)
         {

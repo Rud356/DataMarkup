@@ -20,7 +20,7 @@ namespace App.MarkupProject.Models
             base.Points.Add(_);
             base.Points.Add(_);
             base.Points.Add(_);
-            base.AssignedClassID = classID;
+
             _topCorner = new Tuple<int, int>(bbox.Item1, bbox.Item2);
             _bottomCorner = new Tuple<int, int>(bbox.Item3, bbox.Item4);
             setCorners(_topCorner, _bottomCorner);

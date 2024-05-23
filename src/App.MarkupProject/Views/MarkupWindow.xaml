@@ -68,6 +68,12 @@
                                 </b:EventTrigger>
                             </b:Interaction.Triggers>
                         </Image>
+
+                        <ItemsControl ItemsSource="{Binding Rectangles}">
+                            <DataTemplate>
+                                <Polygon Points="{Binding Points}" Stroke="Black" StrokeThickness="5"></Polygon>
+                            </DataTemplate>
+                        </ItemsControl>
                     </Canvas>
                 </ScrollViewer>
             </Border>

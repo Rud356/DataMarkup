@@ -1,0 +1,66 @@
+[1mdiff --git a/src/App.MarkupProject/Models/Rectangle.cs b/src/App.MarkupProject/Models/Rectangle.cs[m
+[1mindex 6cdf5a8..34a982b 100644[m
+[1m--- a/src/App.MarkupProject/Models/Rectangle.cs[m
+[1m+++ b/src/App.MarkupProject/Models/Rectangle.cs[m
+[36m@@ -20,7 +20,7 @@[m [mnamespace App.MarkupProject.Models[m
+             base.Points.Add(_);[m
+             base.Points.Add(_);[m
+             base.Points.Add(_);[m
+[31m-            base.AssignedClassID = classID;[m
+[32m+[m
+             _topCorner = new Tuple<int, int>(bbox.Item1, bbox.Item2);[m
+             _bottomCorner = new Tuple<int, int>(bbox.Item3, bbox.Item4);[m
+             setCorners(_topCorner, _bottomCorner);[m
+[1mdiff --git a/src/App.MarkupProject/ViewModels/MarkupWindowViewModel.cs b/src/App.MarkupProject/ViewModels/MarkupWindowViewModel.cs[m
+[1mindex b2a44d1..2672230 100644[m
+[1m--- a/src/App.MarkupProject/ViewModels/MarkupWindowViewModel.cs[m
+[1m+++ b/src/App.MarkupProject/ViewModels/MarkupWindowViewModel.cs[m
+[36m@@ -11,6 +11,11 @@[m [musing System.ComponentModel;[m
+ using App.ProjectSettings.Models;[m
+ using App.ProjectSettings.Models.Interfaces;[m
+ using App.MarkupProject.Models.Interfaces;[m
+[32m+[m[32musing System.Collections.ObjectModel;[m
+[32m+[m[32musing App.MarkupProject.Models;[m
+[32m+[m[32musing App.ProjectSettings.DTO;[m
+[32m+[m[32musing System.Linq;[m
+[32m+[m[32musing System.Reactive.Linq;[m
+ [m
+ [m
+ namespace App.MarkupProject.ViewModels[m
+[36m@@ -91,6 +96,19 @@[m [mnamespace App.MarkupProject.ViewModels[m
+ [m
+         public string SelectedMarkupClass { get; set; }[m
+ [m
+[32m+[m[32m        public ObservableCollection<Polygon>? Polygons {[m
+[32m+[m[32m            get => (ObservableCollection<Polygon>) SelectedImage?.Markup.Where([m
+[32m+[m[32m                markup => markup.GetType() == typeof(Models.Polygon)[m
+[32m+[m[32m            ).OfType<Polygon>().ToObservable();[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m        public ObservableCollection<Polygon>? Rectangles[m
+[32m+[m[32m        {[m
+[32m+[m[32m            get => (ObservableCollection<Polygon>)SelectedImage?.Markup.Where([m
+[32m+[m[32m                markup => markup.GetType() == typeof(Models.Rectangle)[m
+[32m+[m[32m            ).OfType<Rectangle>().ToObservable();[m
+[32m+[m[32m        }[m
+[32m+[m
+         public MarkupWindowViewModel(IRegionManager regionManager, Canvas imageCanvas)[m
+         {[m
+             MouseLeftButtonDownCommand = new DelegateCommand<MouseButtonEventArgs>(MouseLeftButtonDown);[m
+[1mdiff --git a/src/App.MarkupProject/Views/MarkupWindow.xaml b/src/App.MarkupProject/Views/MarkupWindow.xaml[m
+[1mindex 1c23ae3..dcb34dc 100644[m
+[1m--- a/src/App.MarkupProject/Views/MarkupWindow.xaml[m
+[1m+++ b/src/App.MarkupProject/Views/MarkupWindow.xaml[m
+[36m@@ -68,6 +68,12 @@[m
+                                 </b:EventTrigger>[m
+                             </b:Interaction.Triggers>[m
+                         </Image>[m
+[32m+[m
+[32m+[m[32m                        <ItemsControl ItemsSource="{Binding Rectangles}">[m
+[32m+[m[32m                            <DataTemplate>[m
+[32m+[m[32m                                <Polygon Points="{Binding Points}" Stroke="Black" StrokeThickness="5"></Polygon>[m
+[32m+[m[32m                            </DataTemplate>[m
+[32m+[m[32m                        </ItemsControl>[m
+                     </Canvas>[m
+                 </ScrollViewer>[m
+             </Border>[m
