@@ -11,7 +11,7 @@
         xmlns:cv="clr-namespace:MVVM.Converters;assembly=MVVM"
         mc:Ignorable="d"
         d:DesignWidth="640"
-        Height="480"
+        d:Height="480"
         Width="{Binding Width, Mode=TwoWay}"
         d:DataContext="{d:DesignInstance vm:AppViewModel}"
         >

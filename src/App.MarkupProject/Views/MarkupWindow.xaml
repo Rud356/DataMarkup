@@ -11,49 +11,59 @@
              d:DesignHeight="720" d:DesignWidth="1280">
     <Grid HorizontalAlignment="Stretch">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="2.5*"/>
             <ColumnDefinition Width="10*"/>
             <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="1.5*"/>
+            <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"></RowDefinition>
         </Grid.RowDefinitions>
         
         <!-- Левая часть: поле загрузки изображений -->
-        <StackPanel Grid.Column="0" VerticalAlignment="Top" Margin="5,5,5,0">
-            <TextBlock Text="Загрузить изображение:" Margin="0,0,0,5"/>
-            <ListBox x:Name="imageListBox" HorizontalAlignment="Stretch" Margin="0,0,0,5"
+        <Grid Grid.Column="0" VerticalAlignment="Top" Margin="5,5,5,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="Загрузить изображение:" Margin="0,0,0,5"/>
+            <ListBox Grid.Row="1" 
+                    x:Name="imageListBox" 
+                     VerticalAlignment="Stretch"
+                     HorizontalAlignment="Stretch" Margin="0,0,0,5"
                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     MinHeight="689"
                      ItemsSource="{Binding Project.Images}" 
                      DisplayMemberPath="Name"
                      SelectedItem="{Binding SelectedImage}"/>
-        </StackPanel>
+        </Grid>
 
-        <!-- Центральная часть: поле редактирования изображения -->
-        <Border Grid.Column="1" Grid.ColumnSpan="1" BorderBrush="Black" BorderThickness="1" Margin="5,5,5,5">
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="Transparent" Margin="5,5,5,5">
-                <Canvas Background="White" LayoutTransform="{Binding Scale}">
-                    <b:Interaction.Triggers>
-                        <b:EventTrigger EventName="Loaded">
-                            <b:InvokeCommandAction Command="{Binding OnCanvasLoadedCommand}" PassEventArgsToCommand="True"></b:InvokeCommandAction>
-                        </b:EventTrigger>
-                    </b:Interaction.Triggers>
-
-                    <Image x:Name="ImgDisplay" Source="{Binding SelectedImage.ImagePath}" Stretch="None">
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1">
+            <!-- Центральная часть: поле редактирования изображения -->
+            <Border Grid.Column="1" Grid.ColumnSpan="1" BorderBrush="Black" BorderThickness="1" Margin="5,5,5,5">
+                <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,5,5,5">
+                    <Canvas Background="White" Height="{Binding SelectedImage.Resolution.Item1}" Width="{Binding SelectedImage.Resolution.Item2}" LayoutTransform="{Binding Scale}">
                         <b:Interaction.Triggers>
-                            <b:EventTrigger EventName="MouseLeftButtonDown">
-                                <b:InvokeCommandAction Command="{Binding MouseLeftButtonDownCommand}" PassEventArgsToCommand="True"></b:InvokeCommandAction>
+                            <b:EventTrigger EventName="Loaded">
+                                <b:InvokeCommandAction Command="{Binding OnCanvasLoadedCommand}" PassEventArgsToCommand="True"></b:InvokeCommandAction>
                             </b:EventTrigger>
-                        </b:Interaction.Triggers>
-                    </Image>
-                </Canvas>
-            </ScrollViewer>
-        </Border>
 
+
+                        </b:Interaction.Triggers>
+
+                        <Image x:Name="ImgDisplay" Source="{Binding SelectedImage.ImagePath}" Stretch="None">
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="MouseLeftButtonDown">
+                                    <b:InvokeCommandAction Command="{Binding MouseLeftButtonDownCommand}" PassEventArgsToCommand="True"></b:InvokeCommandAction>
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
+                        </Image>
+                    </Canvas>
+                </ScrollViewer>
+            </Border>
+        </Grid>
         <!-- Правая часть: кнопки "Инструменты" и кнопка "Назад" -->
         <StackPanel Grid.Column="2" VerticalAlignment="Top" Margin="5,5,5,0" HorizontalAlignment="Stretch">
-            
             <TextBlock Text="Инструменты:" Margin="0,0,0,5"/>
             <Button Content="Полигон" Margin="0,0,0,5" Command="{Binding PolygonToolCommand}"/>
             <Button Content="Прямоугольник" Margin="0,0,0,5" Command="{Binding RectangleToolCommand}" />
@@ -67,8 +77,19 @@
         </StackPanel>
 
         <!-- Правая часть: поле для отображения текущей разметки -->
-        <StackPanel Grid.Column="3" Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top" Margin="5,5,5,0">
-            <ListBox Grid.Column="3" Name="Markups" ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch" ItemsSource="{Binding SelectedImage.Markup}">
+        <Grid Grid.Column="3" Grid.Row="0" VerticalAlignment="Top" Margin="5,5,5,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="Выделения:" Margin="0,0,0,5"/>
+            <ListBox
+                Grid.Row="1"
+                Name="Markups" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                ItemsSource="{Binding SelectedImage.Markup}" Margin="0,0,0,5" MinHeight="689" d:ItemsSource="{d:SampleData ItemCount=5}"
+                >
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -77,12 +98,21 @@
 
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="5*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <!-- TODO: Add converter to button to show/hide specific markup -->
+                            <TextBlock Text="1" Grid.Column="0" Margin="5,5,5,5"></TextBlock>
+                            <Button HorizontalAlignment="Right" Content="H" Grid.Column="1" Margin="5,5,5,5"></Button>
+                            <Button HorizontalAlignment="Right" Content="X" Grid.Column="2" Margin="5,5,5,5"></Button>
+                        </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            
-        </StackPanel>
+        </Grid>
         
     </Grid>
 </UserControl>

@@ -47,6 +47,10 @@ namespace App.MarkupProject.ViewModels
             set { SetProperty(ref _imageCanvas, value); }
         }
 
+        public double ScrollViewWidth { get => ImageCanvas.ActualWidth - 100; }
+
+        public double ScrollViewHeight { get => ImageCanvas.ActualHeight - 100; }
+
         public ScaleTransform Scale { get; } = new ScaleTransform();
 
         public ICommand PolygonToolCommand { get; }
@@ -128,8 +132,8 @@ namespace App.MarkupProject.ViewModels
         private void ExecutePolygonTool()
         {
             SelectedTool = MarkupTool.Polygon;
-            Scale.ScaleY *= 1.1;
-            Scale.ScaleX *= 1.1;
+            Scale.ScaleY *= 1.9;
+            Scale.ScaleX *= 1.9;
         }
 
         private void ExecuteRectangleTool()
