@@ -13,7 +13,7 @@ namespace App.ProjectSettings.Models.Interfaces
         public string ProjectConfigPath { get; }
         public string ProjectName { get; set; }
 
-        public ObservableCollection<string> MarkupClasses { get; }
+        public ref ObservableCollection<string> MarkupClasses { get; }
         public IMarkupFormatter DataFormat { get; set; }
         public ObservableCollection<string> ExcludedImages { get; }
 

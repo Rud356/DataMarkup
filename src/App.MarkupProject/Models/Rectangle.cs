@@ -13,36 +13,17 @@ namespace App.MarkupProject.Models
         private ObservableCollection<Tuple<int, int>> _cachedPositions; 
         private Tuple<int, int> _topCorner, _bottomCorner;
 
-        public Rectangle(Tuple<int, int, int, int> bbox, int classID) : base(classID)
+        public Rectangle(ref ObservableCollection<string> labels, Tuple<int, int, int, int> bbox, int classID) : base(ref labels, classID)
         {
-            _cachedPositions = new();
             var _ = new Tuple<int, int>(0, 0);
-            _cachedPositions.Add(_);
-            _cachedPositions.Add(_);
-            _cachedPositions.Add(_);
-            _cachedPositions.Add(_);
-
+            base.Points.Add(_);
+            base.Points.Add(_);
+            base.Points.Add(_);
+            base.Points.Add(_);
+            base.AssignedClassID = classID;
             _topCorner = new Tuple<int, int>(bbox.Item1, bbox.Item2);
             _bottomCorner = new Tuple<int, int>(bbox.Item3, bbox.Item4);
             setCorners(_topCorner, _bottomCorner);
-        }
-
-        [Reactive]
-        new public ObservableCollection<Tuple<int, int>> Points
-        {
-            get {
-                if (_cachedPositions is not null && _cachedPositions.Count() <= 0) return _cachedPositions;
-                else
-                {
-                    _cachedPositions.Clear();
-                    var tmp = recalculatePoints();
-                    _cachedPositions.Add(tmp.Item1);
-                    _cachedPositions.Add(tmp.Item2);
-                    _cachedPositions.Add(tmp.Item3);
-                    _cachedPositions.Add(tmp.Item4);
-                }
-                return _cachedPositions;
-            }
         }
 
         public void setCorners(Tuple<int, int> topCorner, Tuple<int, int> bottomCorner)
@@ -51,10 +32,10 @@ namespace App.MarkupProject.Models
             _topCorner = points.Item1;
             _bottomCorner = points.Item3;
 
-            _cachedPositions[0] = points.Item1;
-            _cachedPositions[1] = points.Item2;
-            _cachedPositions[2] = points.Item3;
-            _cachedPositions[3] = points.Item4;
+            base.Points[0] = points.Item1;
+            base.Points[1] = points.Item2;
+            base.Points[2] = points.Item3;
+            base.Points[3] = points.Item4;
         }
 
         /// <summary>
@@ -93,13 +74,17 @@ namespace App.MarkupProject.Models
             Tuple<int, int>,
             Tuple<int, int>
         > recalculatePoints(Tuple<int, int> topCorner, Tuple<int, int> bottomCorner) {
-            List<int> xs = new List<int>();
-            xs.Add(topCorner.Item1);
-            xs.Add(bottomCorner.Item1);
+            List<int> xs = new List<int>
+            {
+                topCorner.Item1,
+                bottomCorner.Item1
+            };
 
-            List<int> ys = new List<int>();
-            ys.Add(topCorner.Item2);
-            ys.Add(bottomCorner.Item2);
+            List<int> ys = new List<int>
+            {
+                topCorner.Item2,
+                bottomCorner.Item2
+            };
 
             xs.Sort();
             ys.Sort();

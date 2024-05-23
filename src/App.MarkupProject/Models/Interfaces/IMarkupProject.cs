@@ -14,6 +14,7 @@ namespace App.ProjectSettings.Models.Interfaces
         public IProjectConfigLoader ConfigLoader { get; }
         public IMarkupFormatter Formatter { get; set; }
         public ObservableCollection<IMarkupImage> Images { get; }
+        public ref ObservableCollection<string> Labels { get; }
         public string Name { get; set; }
 
         public void ExportProject();

@@ -78,7 +78,6 @@
             <ComboBox ItemsSource="{Binding Project.ConfigLoader.ProjectConfigObj.MarkupClasses}"
                       SelectedItem="{Binding SelectedMarkupClass}"/>
 
-
             <TextBlock Text="Инструменты:" Margin="5,0,0,5"/>
             <Button Content="Полигон" Margin="0,0,0,5" Command="{Binding PolygonToolCommand}"/>
             <Button Content="Прямоугольник" Margin="0,0,0,5" Command="{Binding RectangleToolCommand}" />
@@ -120,7 +119,7 @@
                                 <ColumnDefinition Width="2*"/>
                             </Grid.ColumnDefinitions>
                             <!-- TODO: Add converter to button to show/hide specific markup -->
-                            <TextBlock Text="1" Grid.Column="0" Margin="5,5,5,5"></TextBlock>
+                            <ComboBox ItemsSource="{Binding Labels}" SelectedItem="{Binding AssignedClass}" Text="{Binding AssignedClass}" Margin="5,5,5,5"/>
                             <Button HorizontalAlignment="Right" Content="H" Grid.Column="1" Margin="5,5,5,5"></Button>
                             <Button HorizontalAlignment="Right" Content="X" Grid.Column="2" Margin="5,5,5,5"></Button>
                         </Grid>

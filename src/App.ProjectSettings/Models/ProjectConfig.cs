@@ -46,7 +46,7 @@ namespace App.ProjectSettings.Models
         [Reactive] public string ProjectName { get; set; }
         [Reactive] public IMarkupFormatter DataFormat { get; set; }
 
-        [Reactive] public ObservableCollection<string> MarkupClasses { get => _markupClasses; }
+        [Reactive] public ref ObservableCollection<string> MarkupClasses { get => ref _markupClasses; }
 
         [Reactive] public ObservableCollection<string> ExcludedImages { get => _excludedImages; }
 

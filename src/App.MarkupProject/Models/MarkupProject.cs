@@ -44,6 +44,11 @@ namespace App.MarkupProject.Models
             set => ConfigLoader.ProjectConfigObj.ProjectName = value;
         }
 
+        [Reactive]
+        public ref ObservableCollection<string> Labels
+        {
+            get => ref ConfigLoader.ProjectConfigObj.MarkupClasses;
+        }
         public void ExportProject()
         {
             List<ImageDTO> images = new();
@@ -110,7 +115,7 @@ namespace App.MarkupProject.Models
                         {
                             if (fig.MarkupType == MarkupFigureType.polygon)
                             {
-                                Polygon poly = new();
+                                Polygon poly = new(ref Labels);
 
                                 foreach (var p in fig.Points)
                                 {
@@ -123,6 +128,7 @@ namespace App.MarkupProject.Models
                             {
                                 figures.Add(
                                     new Rectangle(
+                                        ref Labels,
                                         new Tuple<int, int, int, int>(
                                             // Bbox contains 4 points in dto, which have clock-wise order of points (x, y) pixels
                                             fig.Points[0].Item1, fig.Points[0].Item2,

@@ -54,10 +54,6 @@ namespace App.MarkupProject.ViewModels
             set { SetProperty(ref _scrollViewer, value); }
         }
 
-        public double ScrollViewWidth { get => ImageCanvas.ActualWidth - 100; }
-
-        public double ScrollViewHeight { get => ImageCanvas.ActualHeight - 100; }
-
         public ScaleTransform Scale { get; } = new ScaleTransform();
 
         public ICommand PolygonToolCommand { get; }
@@ -166,10 +162,12 @@ namespace App.MarkupProject.ViewModels
                         var topLeft = new Tuple<int, int>((int)_firstPoint.Value.X, (int)_firstPoint.Value.Y);
                         var bottomRight = new Tuple<int, int>((int)position.X, (int)position.Y);
                         var rectangle = new Models.Rectangle(
+                            ref _project.Labels,
                             new Tuple<int, int, int, int>
-                                (topLeft.Item1, topLeft.Item2, bottomRight.Item1, bottomRight.Item2), 0
+                                (topLeft.Item1, topLeft.Item2, bottomRight.Item1, bottomRight.Item2),
+                            SelectedClassID
                         );
-
+                        rectangle.AssignedClass = SelectedMarkupClass;
                         SelectedImage.Markup.Add(rectangle);
                         _firstPoint = null; // Сбросить первую точку для следующего прямоугольника
                         UpdateCanvas();
@@ -179,38 +177,38 @@ namespace App.MarkupProject.ViewModels
 
                 case MarkupTool.Polygon:
                 {
-                        if (tempPoly == null)
-                        {
-                            tempPoly = new Models.Polygon();
-                        }
+                    if (tempPoly == null)
+                    {
+                        tempPoly = new Models.Polygon(ref _project.Labels);
+                    }
 
-                        Point position = e.GetPosition((Image)e.Source);
-                        Tuple<int, int>? previous = null;
-                        try
-                        {
-                            previous = tempPoly.Points.Last();
-                        }
-                        catch (Exception ex) { } // Silencing error
+                    Point position = e.GetPosition((Image)e.Source);
+                    Tuple<int, int>? previous = null;
+                    try
+                    {
+                        previous = tempPoly.Points.Last();
+                    }
+                    catch (Exception ex) { } // Silencing error
 
-                        tempPoly.Points.Add(new Tuple<int, int>((int)position.X, (int)position.Y));
+                    tempPoly.Points.Add(new Tuple<int, int>((int)position.X, (int)position.Y));
 
-                        if (previous is not null)
-                        {
+                    if (previous is not null)
+                    {
                             
-                            var point = tempPoly.Points.Last();
+                        var point = tempPoly.Points.Last();
 
-                            var line = new System.Windows.Shapes.Line()
-                            {
-                                Stroke = System.Windows.Media.Brushes.BlueViolet,
-                                X1 = previous.Item1,
-                                Y1 = previous.Item2,
-                                X2 = point.Item1,
-                                Y2 = point.Item2
-                            };
-                            ImageCanvas.Children.Add(line);
-                        }
+                        var line = new System.Windows.Shapes.Line()
+                        {
+                            Stroke = System.Windows.Media.Brushes.BlueViolet,
+                            X1 = previous.Item1,
+                            Y1 = previous.Item2,
+                            X2 = point.Item1,
+                            Y2 = point.Item2
+                        };
+                        ImageCanvas.Children.Add(line);
+                    }
 
-                        break;
+                    break;
                 }
             }
         }
@@ -221,6 +219,7 @@ namespace App.MarkupProject.ViewModels
             {
                 if (SelectedTool == MarkupTool.Polygon && tempPoly is not null && tempPoly.Points.Count() >= 3)
                 {
+                    tempPoly.AssignedClass = SelectedMarkupClass;
                     SelectedImage.Markup.Add(tempPoly);
                     tempPoly = null;
                     UpdateCanvas();
@@ -305,7 +304,7 @@ namespace App.MarkupProject.ViewModels
                     // Skip rendering
                     continue;
 
-                if (markup is Models.Rectangle)
+                if (markup.GetType() == typeof(Models.Rectangle))
                 {
                     Models.Rectangle rectangle = (Models.Rectangle)markup;
                     var topLeft = rectangle.Points[0];
@@ -313,7 +312,7 @@ namespace App.MarkupProject.ViewModels
                     DrawRectangle(ImageCanvas, topLeft, bottomRight);
                 }
 
-                if (markup is Models.Polygon)
+                if (markup.GetType() == typeof(Models.Polygon))
                 {
                     Models.Polygon polygon = (Models.Polygon)markup;
                     DrawPolygon(ImageCanvas, polygon.Points);
