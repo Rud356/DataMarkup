@@ -11,14 +11,14 @@ namespace App.MarkupProject.Models
     /// </summary>
     public class Polygon : ReactiveObject, IMarkupFigure
     {
-        private ObservableCollection<Vertex> _points;
+        private ObservableCollection<Vertex> points;
         private int _classID;
         private bool _isVisible;
         private ObservableCollection<string> _labels;
 
         public Polygon(ref ObservableCollection<string> labels)
         {
-            _points = new();
+            points = new();
             AssignedClassID = -1;
             IsVisible = true;
             _labels = labels;
@@ -53,7 +53,7 @@ namespace App.MarkupProject.Models
             set => _isVisible = value;
         }
 
-        [Reactive] public ObservableCollection<Vertex> Points => _points;
+        [Reactive] public ObservableCollection<Vertex> Points => points;
 
         public ref ObservableCollection<string> Labels { get => ref _labels; }
     }

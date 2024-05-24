@@ -35,6 +35,15 @@ internal class MarkupWindowViewModel : BindableBase
 {
     private Vertex? position = null; // Первая точка для создания прямоугольника
 
+    public Vertex? Position
+    {
+        get => position;
+        set
+        {
+            SetProperty(ref position, value);
+        }
+    }
+
     private Models.Polygon? tempPoly = null;
 
     public Polygon? TempPoly {  get => tempPoly; }

@@ -25,9 +25,6 @@ namespace App.MarkupProject.Models
         public void setCorners(Vertex topCorner, Vertex bottomCorner)
         {
             var points = recalculatePoints(topCorner, bottomCorner);
-            _topCorner = points.Item1;
-            _bottomCorner = points.Item3;
-
             base.Points.Add(points.Item1);
             base.Points.Add(points.Item2);
             base.Points.Add(points.Item3);
@@ -70,10 +67,10 @@ namespace App.MarkupProject.Models
                 Vertex,
                 Vertex
             >(
-                new Vertex(topCorner.Item1, topCorner.Item2),
-                new Vertex(topCorner.Item1, bottomCorner.Item1),
-                new Vertex(bottomCorner.Item1, bottomCorner.Item2),
-                new Vertex(bottomCorner.Item1, topCorner.Item2)
+                new Vertex(topCorner.Item1, topCorner.Item2), // Top-left corner
+                new Vertex(topCorner.Item1, bottomCorner.Item2), // Bottom-left corner
+                new Vertex(bottomCorner.Item1, bottomCorner.Item2), // Bottom-right corner
+                new Vertex(bottomCorner.Item1, topCorner.Item2) // Top-right corne
             );
         }
     }

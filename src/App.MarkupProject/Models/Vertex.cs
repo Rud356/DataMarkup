@@ -12,10 +12,13 @@ namespace App.MarkupProject.Models
     {
         [Reactive]
         public int X {  get; set; }
+
         [Reactive]
         public int Y { get; set; }
+
         [Reactive]
         public int Item1 { get =>  X; set => X = value; }
+
         [Reactive]
         public int Item2 { get => Y; set => Y = value; }
 
