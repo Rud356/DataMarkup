@@ -59,26 +59,29 @@
                         </b:EventTrigger>
                     </b:Interaction.Triggers>
 
-                    <ItemsControl ItemsSource="{Binding SelectedImage}" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <Canvas VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="Canvas" Width="{Binding SelectedImage.Resolution.Item1}" Height="{Binding SelectedImage.Resolution.Item2}" LayoutTransform="{Binding Scale}">
-                            <b:Interaction.Triggers>
-                                <b:EventTrigger EventName="MouseLeftButtonDown">
-                                    <b:InvokeCommandAction Command="{Binding MouseLeftButtonDownCommand}" PassEventArgsToCommand="True"></b:InvokeCommandAction>
-                                </b:EventTrigger>
-                            </b:Interaction.Triggers>
-                            <Canvas.Background>
-                                <ImageBrush ImageSource="{Binding SelectedImage.ImagePath}" Stretch="None"></ImageBrush>
-                            </Canvas.Background>
+                    <ItemsControl HorizontalAlignment="Center" VerticalAlignment="Center" ItemsSource="{Binding SelectedImage.Markup}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate >
+                                <Canvas x:Name="Canvas" Width="{Binding SelectedImage.Resolution.Item1}" Height="{Binding SelectedImage.Resolution.Item2}" >
+                                    <b:Interaction.Triggers>
+                                        <b:EventTrigger EventName="MouseLeftButtonDown">
+                                            <b:InvokeCommandAction Command="{Binding MouseLeftButtonDownCommand}" PassEventArgsToCommand="True"></b:InvokeCommandAction>
+                                        </b:EventTrigger>
+                                    </b:Interaction.Triggers>
+                                    
+                                    <Canvas.Background>
+                                        <ImageBrush ImageSource="{Binding SelectedImage.ImagePath}"></ImageBrush>
+                                    </Canvas.Background>
+                                </Canvas>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
 
-                            <ItemsControl  ItemsSource="{Binding SelectedImage.Markup}" Width="{Binding SelectedImage.Resolution.Item1}" Height="{Binding SelectedImage.Resolution.Item2}">
-                                <ItemsControl.Resources>
-                                    <DataTemplate DataType="{x:Type models:Rectangle}">
-                                        <Polygon Points="{Binding Converter={cv:FigureConverter}}" StrokeThickness="2" Stroke="PaleGreen">
-                                        </Polygon>
-                                    </DataTemplate>
-                                </ItemsControl.Resources>
-                            </ItemsControl>
-                        </Canvas>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type models:Rectangle}">
+                                <Polygon Canvas.Top="0" Canvas.Left="0" Points="{Binding Converter={cv:FigureConverter}}" StrokeThickness="2" Stroke="PaleGreen">
+                                </Polygon>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </ScrollViewer>
             </Border>

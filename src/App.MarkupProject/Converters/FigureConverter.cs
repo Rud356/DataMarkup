@@ -23,6 +23,7 @@ namespace App.MarkupProject.Converters
                 {
                     sb.Append(String.Format("{0},{1} ", p.Item1, p.Item2));
                 }
+                sb.Append(String.Format("{0},{1} ", fig.Points[0].Item1, fig.Points[0].Item2));
                 sb.Remove(sb.Length - 1, 1);
                 var result = sb.ToString();
                 return result;
