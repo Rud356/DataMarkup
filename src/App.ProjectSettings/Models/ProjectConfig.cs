@@ -1,8 +1,10 @@
-﻿using System.Collections.ObjectModel;
+﻿using Prism.Commands;
+using System.Collections.ObjectModel;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.IO;
 using App.ProjectSettings.Models.Interfaces;
+using System.Windows.Input;
 
 namespace App.ProjectSettings.Models
 {
@@ -77,6 +79,10 @@ namespace App.ProjectSettings.Models
         public void includeImage(string ImagePath)
         {
             _excludedImages.Remove(ImagePath);
+        }
+
+        private void PerformToMarkup()
+        {
         }
     }
 }

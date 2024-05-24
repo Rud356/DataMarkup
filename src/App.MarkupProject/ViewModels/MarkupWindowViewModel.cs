@@ -16,6 +16,7 @@ using App.MarkupProject.Models;
 using App.ProjectSettings.DTO;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Runtime;
 
 
 namespace App.MarkupProject.ViewModels;
@@ -80,6 +81,8 @@ internal class MarkupWindowViewModel : BindableBase
 
     public ICommand SelectionKeyboardCommand { get; }
 
+    public ICommand ToSettings { get; }
+
     private IMarkupProject _project;
 
     public IMarkupProject Project => _project;
@@ -97,6 +100,7 @@ internal class MarkupWindowViewModel : BindableBase
         }
     }
 
+
     private string _selectedMarkup;
     public string SelectedMarkupClass
     {
@@ -107,7 +111,7 @@ internal class MarkupWindowViewModel : BindableBase
         }
     }
 
-    public MarkupWindowViewModel(IRegionManager regionManager, Canvas imageCanvas)
+    public MarkupWindowViewModel(IRegionManager regionManager)
     {
         MouseLeftButtonDownCommand = new DelegateCommand<MouseButtonEventArgs>(MouseLeftButtonDown);
         GoBackCommand = new DelegateCommand(() =>
@@ -115,7 +119,12 @@ internal class MarkupWindowViewModel : BindableBase
                 regionManager.RequestNavigate("MainRegion", "MainView");
             }
         );
-
+        ToSettings = new DelegateCommand(
+            () =>
+            {
+                regionManager.RequestNavigate("MainRegion", "ProjectSettingsView");
+            }
+        );
         _project = ExecuteLoadProject();
 
         if (_project == null)

@@ -22,8 +22,7 @@ public partial class MainApp
     protected override void RegisterTypes(IContainerRegistry containerRegistry)
     {
         containerRegistry.RegisterSingleton<AppViewModel>();
-        /*containerRegistry
-            .RegisterSingleton<AboutModule>();*/
+        containerRegistry.RegisterForNavigation<MainView>();
         containerRegistry.RegisterForNavigation<MainView>();
     }
     

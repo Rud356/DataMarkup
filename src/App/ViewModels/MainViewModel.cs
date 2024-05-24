@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Prism.Navigation;
 using Prism.Regions;
+using App.ProjectSettings.Views;
+using App.MarkupProject.Views;
 using App.AboutSection.Views;
 using App.Shared.Events;
 using Microsoft.Win32;

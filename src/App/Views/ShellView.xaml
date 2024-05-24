@@ -17,5 +17,6 @@
         >
     <Grid>
         <ContentControl regions:RegionManager.RegionName="MainRegion"/>
+        <ContentControl regions:RegionManager.RegionName="SettingsRegion"/>
     </Grid>
 </Window>

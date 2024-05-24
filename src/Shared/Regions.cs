@@ -9,6 +9,8 @@ namespace App.Shared
     public static class Regions
     {
         public const string AppStartRegion = nameof(AppStartRegion);
+        public const string MainRegion = nameof(MainRegion);
+        public const string SettingsRegion = nameof(SettingsRegion);
     }
 
     public static class Navigation

@@ -11,7 +11,7 @@ public class SettingsModule : IModule
 {
     public void RegisterTypes(IContainerRegistry containerRegistry)
     {
-        containerRegistry.RegisterForNavigation<ProjectSettingsWindow>();
+        containerRegistry.RegisterForNavigation<ProjectSettingsView>();
     }
 
     public void OnInitialized(IContainerProvider containerProvider)

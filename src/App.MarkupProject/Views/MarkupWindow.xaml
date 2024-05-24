@@ -6,7 +6,9 @@
              xmlns:local="clr-namespace:App.MarkupProject.Views"
              xmlns:cv="clr-namespace:App.MarkupProject.Converters"
              xmlns:models="clr-namespace:App.MarkupProject.Models"
-             xmlns:viewmodels="clr-namespace:App.MarkupProject.ViewModels" xmlns:b="http://schemas.microsoft.com/xaml/behaviors" xmlns:behaviors="clr-namespace:PolygonsMarkingEditor.Behaviors"
+             xmlns:viewmodels="clr-namespace:App.MarkupProject.ViewModels"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:behaviors="clr-namespace:PolygonsMarkingEditor.Behaviors"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewmodels:MarkupWindowViewModel}"
              d:Background="White"
@@ -67,62 +69,16 @@
                             <Canvas.Background>
                                 <ImageBrush ImageSource="{Binding SelectedImage.ImagePath}" Stretch="None"></ImageBrush>
                             </Canvas.Background>
-                            
+
                             <ItemsControl  ItemsSource="{Binding SelectedImage.Markup}" Width="{Binding SelectedImage.Resolution.Item1}" Height="{Binding SelectedImage.Resolution.Item2}">
                                 <ItemsControl.Resources>
-                                    <DataTemplate DataType="{x:Type models:Polygon}">
-                                        <Polygon Canvas.Top="0" Canvas.Left="0" Points="{Binding Converter={cv:FigureConverter}}" StrokeThickness="2" Stroke="PaleGreen">
-                                        </Polygon>
-                                    </DataTemplate>
-
                                     <DataTemplate DataType="{x:Type models:Rectangle}">
-                                        <Rectangle
-                                            Width="{Binding Converter={cv:RectangleConverterWidth}}" Height="{Binding Converter={cv:RectangleConverterHeight}}"
-                                            StrokeThickness="2" Stroke="Indigo"></Rectangle>
+                                        <Polygon Points="{Binding Converter={cv:FigureConverter}}" StrokeThickness="2" Stroke="PaleGreen">
+                                        </Polygon>
                                     </DataTemplate>
                                 </ItemsControl.Resources>
                             </ItemsControl>
                         </Canvas>
-                        <ItemsControl ItemsSource="{Binding TempPoly}">
-                            <ItemsControl.Resources>
-                                <Style TargetType="Ellipse" x:Key="EllipseStyle">
-                                    <Setter Property="Fill" Value="Aqua"/>
-                                    <Setter Property="Width" Value="10"/>
-                                    <Setter Property="Height" Value="10"/>
-                                    <Setter Property="Cursor" Value="Hand"/>
-                                    <Style.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Fill" Value="Salmon" />
-                                            <Setter Property="Width" Value="12"/>
-                                            <Setter Property="Height" Value="12"/>
-                                            <Setter Property="Margin" Value="-1 -1 0 0"/>
-                                        </Trigger>
-                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                            <Setter Property="Fill" Value="Red"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-
-                                <DataTemplate DataType="{x:Type models:Vertex}">
-                                    <Ellipse 
-                                         Style="{StaticResource EllipseStyle}"
-                                         Canvas.Top="{Binding Y, Mode=TwoWay}" 
-                                         Canvas.Left="{Binding X, Mode=TwoWay}">
-                                    </Ellipse>
-                                </DataTemplate>
-
-                                <DataTemplate DataType="{x:Type models:Polygon}">
-                                    <Polygon Points="{Binding Converter={cv:FigureConverter}}" StrokeThickness="3" Stroke="Wheat" Visibility="{Binding IsHidden}"></Polygon>
-                                </DataTemplate>
-                            </ItemsControl.Resources>
-
-                            <ItemsControl.ItemContainerStyle>
-                                <Style TargetType="ContentPresenter" >
-                                    <Setter Property="Canvas.Left" Value="{Binding Path=X, Mode=TwoWay}" />
-                                    <Setter Property="Canvas.Top" Value="{Binding Path=Y, Mode=TwoWay}" />
-                                </Style>
-                            </ItemsControl.ItemContainerStyle>
-                        </ItemsControl>
                     </ItemsControl>
                 </ScrollViewer>
             </Border>
@@ -143,6 +99,7 @@
             <Button Content="Выбор фигуры" Margin="0,0,0,5" Command="{Binding ChooseFigureToolCommand}"/>
 
             <TextBlock Text="Выход:" Margin="0,0,0,5"/>
+            <Button Command="{Binding ToSettings}" Content="К настройкам" Margin="0,0,0,5"/>
             <Button Command="{Binding GoBackCommand}" Content="Закрыть проект" Margin="0,0,0,5"/>
         </StackPanel>
 
