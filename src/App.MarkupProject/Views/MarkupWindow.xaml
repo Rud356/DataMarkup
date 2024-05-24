@@ -5,7 +5,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:App.MarkupProject.Views"
              xmlns:cv="clr-namespace:App.MarkupProject.Converters"
-             xmlns:viewmodels="clr-namespace:App.MarkupProject.ViewModels" xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:models="clr-namespace:App.MarkupProject.Models"
+             xmlns:viewmodels="clr-namespace:App.MarkupProject.ViewModels" xmlns:b="http://schemas.microsoft.com/xaml/behaviors" xmlns:behaviors="clr-namespace:PolygonsMarkingEditor.Behaviors"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewmodels:MarkupWindowViewModel}"
              d:Background="White"
@@ -46,42 +47,87 @@
             <!-- Центральная часть: поле редактирования изображения -->
             <Border Grid.Column="1" Grid.ColumnSpan="1" BorderBrush="Black" BorderThickness="1" Margin="5,5,5,5">
                 <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,5,5,5">
+                    
                     <b:Interaction.Triggers>
                         <b:EventTrigger EventName="PreviewMouseWheel">
                             <b:InvokeCommandAction Command="{Binding MouseWheelCommand}" PassEventArgsToCommand="True" />
-                        </b:EventTrigger>
-                        <b:EventTrigger EventName="Loaded">
-                            <b:InvokeCommandAction Command="{Binding OnScrollViewLoadedCommand}" PassEventArgsToCommand="True"></b:InvokeCommandAction>
                         </b:EventTrigger>
                         <b:EventTrigger EventName="KeyDown">
                             <b:InvokeCommandAction Command="{Binding CanvasKeyStrokeCommand}" PassEventArgsToCommand="True"></b:InvokeCommandAction>
                         </b:EventTrigger>
                     </b:Interaction.Triggers>
 
-                    <Canvas Background="White" Height="{Binding SelectedImage.Resolution.Item1}" Width="{Binding SelectedImage.Resolution.Item2}" LayoutTransform="{Binding Scale}">
-                        <b:Interaction.Triggers>
-                            <b:EventTrigger EventName="Loaded">
-                                <b:InvokeCommandAction Command="{Binding OnCanvasLoadedCommand}" PassEventArgsToCommand="True"></b:InvokeCommandAction>
-                            </b:EventTrigger>
-                        </b:Interaction.Triggers>
-
-                        <Image x:Name="ImgDisplay" Source="{Binding SelectedImage.ImagePath}" Stretch="None">
+                    <ItemsControl ItemsSource="{Binding SelectedImage}">
+                        <Canvas x:Name="Canvas" Width="{Binding SelectedImage.Resolution.Item1}" Height="{Binding SelectedImage.Resolution.Item2}" LayoutTransform="{Binding Scale}">
                             <b:Interaction.Triggers>
                                 <b:EventTrigger EventName="MouseLeftButtonDown">
                                     <b:InvokeCommandAction Command="{Binding MouseLeftButtonDownCommand}" PassEventArgsToCommand="True"></b:InvokeCommandAction>
                                 </b:EventTrigger>
                             </b:Interaction.Triggers>
-                        </Image>
+                            <Canvas.Background>
+                                <ImageBrush ImageSource="{Binding SelectedImage.ImagePath}" Stretch="None"></ImageBrush>
+                            </Canvas.Background>
+                            
+                            <ItemsControl  ItemsSource="{Binding SelectedImage.Markup}" Width="{Binding SelectedImage.Resolution.Item1}" Height="{Binding SelectedImage.Resolution.Item2}">
+                                <ItemsControl.Resources>
+                                    <DataTemplate DataType="{x:Type models:Polygon}">
+                                        <Polygon Canvas.Top="0" Canvas.Left="0" Points="{Binding Converter={cv:FigureConverter}}" StrokeThickness="2" Stroke="PaleGreen">
+                                        </Polygon>
+                                    </DataTemplate>
 
-                        <ItemsControl ItemsSource="{Binding Rectangles}">
-                            <DataTemplate>
-                                <Polygon Points="{Binding Points}" Stroke="Black" StrokeThickness="5"></Polygon>
-                            </DataTemplate>
+                                    <DataTemplate DataType="{x:Type models:Rectangle}">
+                                        <Rectangle
+                                            Width="{Binding Converter={cv:RectangleConverterWidth}}" Height="{Binding Converter={cv:RectangleConverterHeight}}"
+                                            StrokeThickness="2" Stroke="Indigo"></Rectangle>
+                                    </DataTemplate>
+                                </ItemsControl.Resources>
+                            </ItemsControl>
+                        </Canvas>
+                        <ItemsControl ItemsSource="{Binding TempPoly}">
+                            <ItemsControl.Resources>
+                                <Style TargetType="Ellipse" x:Key="EllipseStyle">
+                                    <Setter Property="Fill" Value="Aqua"/>
+                                    <Setter Property="Width" Value="10"/>
+                                    <Setter Property="Height" Value="10"/>
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Fill" Value="Salmon" />
+                                            <Setter Property="Width" Value="12"/>
+                                            <Setter Property="Height" Value="12"/>
+                                            <Setter Property="Margin" Value="-1 -1 0 0"/>
+                                        </Trigger>
+                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                            <Setter Property="Fill" Value="Red"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+
+                                <DataTemplate DataType="{x:Type models:Vertex}">
+                                    <Ellipse 
+                                         Style="{StaticResource EllipseStyle}"
+                                         Canvas.Top="{Binding Y, Mode=TwoWay}" 
+                                         Canvas.Left="{Binding X, Mode=TwoWay}">
+                                    </Ellipse>
+                                </DataTemplate>
+
+                                <DataTemplate DataType="{x:Type models:Polygon}">
+                                    <Polygon Points="{Binding Converter={cv:FigureConverter}}" StrokeThickness="3" Stroke="Wheat" Visibility="{Binding IsHidden}"></Polygon>
+                                </DataTemplate>
+                            </ItemsControl.Resources>
+
+                            <ItemsControl.ItemContainerStyle>
+                                <Style TargetType="ContentPresenter" >
+                                    <Setter Property="Canvas.Left" Value="{Binding Path=X, Mode=TwoWay}" />
+                                    <Setter Property="Canvas.Top" Value="{Binding Path=Y, Mode=TwoWay}" />
+                                </Style>
+                            </ItemsControl.ItemContainerStyle>
                         </ItemsControl>
-                    </Canvas>
+                    </ItemsControl>
                 </ScrollViewer>
             </Border>
         </Grid>
+
         <!-- Правая часть: кнопки "Инструменты" и кнопка "Назад" -->
         <StackPanel Grid.Column="2" VerticalAlignment="Top" Margin="5,5,5,0" HorizontalAlignment="Stretch">
             <TextBlock Text="Выбор класса для разметки:" Margin="5,0,0,5"/>
@@ -138,8 +184,8 @@
                                 <RowDefinition Height="1*"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            <ComboBox Grid.Row="1" HorizontalAlignment="Stretch" ItemsSource="{Binding Labels}" SelectedItem="{Binding AssignedClassID}" Text="{Binding AssignedClass}" Margin="5,5,5,5"/>
-                            <CheckBox Grid.Row="1"  VerticalAlignment="Center" HorizontalAlignment="Right" Content="H" Grid.Column="1" Margin="5,5,5,5"></CheckBox>
+                            <ComboBox Grid.Row="1" HorizontalAlignment="Stretch" ItemsSource="{Binding Labels}" SelectedItem="{Binding AssignedClassID, Mode=TwoWay}" Text="{Binding AssignedClass, Mode=TwoWay}" Margin="5,5,5,5"/>
+                            <CheckBox Grid.Row="1" IsChecked="{Binding IsVisible, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Right" Content="H" Grid.Column="1" Margin="5,5,5,5"></CheckBox>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

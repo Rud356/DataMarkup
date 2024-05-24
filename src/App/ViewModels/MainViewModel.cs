@@ -26,7 +26,7 @@ namespace App.ViewModels
                 navigation.RequestNavigate("MainRegion", "AboutView");
             });
             
-            OpenMarkupWindowCommand = new DelegateCommand(() => // мб убрать
+            OpenMarkupWindowCommand = new DelegateCommand(() =>
             {
                 navigation.RequestNavigate("MainRegion", "MarkupWindow");
             });

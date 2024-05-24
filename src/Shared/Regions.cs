@@ -15,5 +15,6 @@ namespace App.Shared
     {
         public const string AboutPage = "AboutView";
         public const string MarkupPage = "MarkupWindow";
+        public const string MarkupProjectSettings = "ProjectSettingsWindow";
     }
 }

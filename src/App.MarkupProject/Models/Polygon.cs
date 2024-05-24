@@ -11,16 +11,16 @@ namespace App.MarkupProject.Models
     /// </summary>
     public class Polygon : ReactiveObject, IMarkupFigure
     {
-        private ObservableCollection<Tuple<int, int>> _points;
+        private ObservableCollection<Vertex> _points;
         private int _classID;
-        private bool _isHidden;
+        private bool _isVisible;
         private ObservableCollection<string> _labels;
 
         public Polygon(ref ObservableCollection<string> labels)
         {
             _points = new();
             AssignedClassID = -1;
-            _isHidden = false;
+            IsVisible = true;
             _labels = labels;
         }
 
@@ -29,9 +29,9 @@ namespace App.MarkupProject.Models
             AssignedClassID = classID;
         }
 
-        public Polygon(ref ObservableCollection<string> labels, int classID, bool isHidden) : this(ref labels, classID)
+        public Polygon(ref ObservableCollection<string> labels, int classID, bool isVisible) : this(ref labels, classID)
         {
-            _isHidden = isHidden;
+            IsVisible = isVisible;
         }
 
         private string _label = "Not assigned";
@@ -48,9 +48,12 @@ namespace App.MarkupProject.Models
         }
 
         [Reactive] public int AssignedClassID { get => _classID; set => _classID = value; }
-        [Reactive] public bool IsHidden { get => _isHidden; set => _isHidden = value; }
+        [Reactive] public bool IsVisible {
+            get => _isVisible;
+            set => _isVisible = value;
+        }
 
-        [Reactive] public ObservableCollection<Tuple<int, int>> Points => _points;
+        [Reactive] public ObservableCollection<Vertex> Points => _points;
 
         public ref ObservableCollection<string> Labels { get => ref _labels; }
     }

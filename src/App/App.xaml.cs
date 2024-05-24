@@ -5,12 +5,13 @@ using Prism.Regions;
 using Prism.Unity;
 using App.AboutSection;
 using App.MarkupProject;
+using App.ProjectSettings;
 using App.ViewModels;
 using App.Views;
 using SamplePrism2024.About;
 using App.AboutSection.Views;
 using App.MarkupProject.Views;
-
+using App.ProjectSettings.Views;
 namespace App;
 
 /// <summary>
@@ -30,7 +31,8 @@ public partial class MainApp
     {
         moduleCatalog
             .AddModule<AboutModule>()
-            .AddModule<MarkupModule>();
+            .AddModule<MarkupModule>()
+            .AddModule<SettingsModule>();
     }
     
     protected override void OnInitialized()

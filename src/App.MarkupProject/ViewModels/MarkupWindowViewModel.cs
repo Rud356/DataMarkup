@@ -32,9 +32,11 @@ public enum MarkupTool
 
 internal class MarkupWindowViewModel : BindableBase
 {
-    private Point? _firstPoint = null; // Первая точка для создания прямоугольника
+    private Vertex? position = null; // Первая точка для создания прямоугольника
 
     private Models.Polygon? tempPoly = null;
+
+    public Polygon? TempPoly {  get => tempPoly; }
 
     private MarkupTool _selectedTool;
     public MarkupTool SelectedTool
@@ -62,22 +64,6 @@ internal class MarkupWindowViewModel : BindableBase
         }
     }
 
-    private Canvas _imageCanvas;
-
-    public Canvas ImageCanvas
-    {
-        get { return _imageCanvas; }
-        set { SetProperty(ref _imageCanvas, value); }
-    }
-
-    private ScrollViewer _scrollViewer;
-
-    public ScrollViewer MainScrollViewer
-    {
-        get { return _scrollViewer; }
-        set { SetProperty(ref _scrollViewer, value); }
-    }
-
     public ScaleTransform Scale { get; } = new ScaleTransform();
 
     public ICommand PolygonToolCommand { get; }
@@ -91,10 +77,6 @@ internal class MarkupWindowViewModel : BindableBase
     public ICommand MouseWheelCommand { get; }
 
     public ICommand CanvasKeyStrokeCommand { get; }
-
-    public ICommand OnCanvasLoadedCommand { get; }
-
-    public ICommand OnScrollViewLoadedCommand {  get; }
 
     public ICommand SelectionKeyboardCommand { get; }
 
@@ -129,9 +111,10 @@ internal class MarkupWindowViewModel : BindableBase
     {
         MouseLeftButtonDownCommand = new DelegateCommand<MouseButtonEventArgs>(MouseLeftButtonDown);
         GoBackCommand = new DelegateCommand(() =>
-        {
-            regionManager.RequestNavigate("MainRegion", "MainView");
-        });
+            {
+                regionManager.RequestNavigate("MainRegion", "MainView");
+            }
+        );
 
         _project = ExecuteLoadProject();
 
@@ -144,14 +127,10 @@ internal class MarkupWindowViewModel : BindableBase
         ChooseFigureToolCommand = new DelegateCommand(ExecuteChooseFigureTool);
         MoveFigureToolCommand = new DelegateCommand(ExecuteMoveFigureTool);
         MovePointsToolCommand = new DelegateCommand(ExecuteMovePointsTool);
-        OnCanvasLoadedCommand = new DelegateCommand<RoutedEventArgs>(OnCanvasLoaded);
-        OnScrollViewLoadedCommand = new DelegateCommand<RoutedEventArgs>(OnScrollViewLoaded);
         MouseWheelCommand = new DelegateCommand<MouseWheelEventArgs>(OnMouseWheel);
         CanvasKeyStrokeCommand = new DelegateCommand<KeyEventArgs>(OnKeyStrokeEvent);
         SelectionKeyboardCommand = new DelegateCommand<KeyEventArgs>(SelectionKeyboard);
 
-        // Присваиваем переданный Canvas ImageCanvas
-        ImageCanvas = imageCanvas;
         if (Project.ConfigLoader.ProjectConfigObj.MarkupClasses.Count() != 0)
             SelectedMarkupClass = Project.ConfigLoader.ProjectConfigObj.MarkupClasses.ElementAt(0);
     }
@@ -159,7 +138,7 @@ internal class MarkupWindowViewModel : BindableBase
     private void OnMouseWheel(MouseWheelEventArgs e)
     {
         const double SCALE_K = 1.1;
-        Point position = e.GetPosition(ImageCanvas);
+        Point position = e.GetPosition((UIElement) e.Source);
         Scale.CenterX = position.X;
         Scale.CenterY = position.Y;
 
@@ -183,19 +162,20 @@ internal class MarkupWindowViewModel : BindableBase
         {
             case MarkupTool.Rectangle:
             {
-                Point position = e.GetPosition((Image)e.Source);
+                if (e.Source is not Canvas) break;
+                Point pos = e.GetPosition((Canvas) e.Source);
                 int SelectedClassID = Project.ConfigLoader.ProjectConfigObj.MarkupClasses.IndexOf(SelectedMarkupClass);
                 if (SelectedClassID < 0) 
                 {
                     return;
                 }
-                if (_firstPoint == null)
+                if (position == null)
                 {
-                    _firstPoint = position;
+                    position = new Vertex((int)pos.X, (int)pos.Y);
                 }
                 else
                 {
-                    var topLeft = new Tuple<int, int>((int)_firstPoint.Value.X, (int)_firstPoint.Value.Y);
+                    var topLeft = new Tuple<int, int>((int)pos.X, (int)pos.Y);
                     var bottomRight = new Tuple<int, int>((int)position.X, (int)position.Y);
                     var rectangle = new Models.Rectangle(
                         ref _project.Labels,
@@ -205,28 +185,29 @@ internal class MarkupWindowViewModel : BindableBase
                     );
                     rectangle.AssignedClass = SelectedMarkupClass;
                     SelectedImage.Markup.Add(rectangle);
-                    _firstPoint = null; // Сбросить первую точку для следующего прямоугольника
-                    UpdateCanvas();
+                    position = null; // Сбросить первую точку для следующего прямоугольника
                 }
                 break;
             }
 
             case MarkupTool.Polygon:
             {
+                if (e.Source is not Canvas)
+                    break;
                 if (tempPoly == null)
                 {
                     tempPoly = new Models.Polygon(ref _project.Labels);
                 }
 
-                Point position = e.GetPosition((Image)e.Source);
-                Tuple<int, int>? previous = null;
+                Point position = e.GetPosition((Canvas) e.Source);
+                Vertex? previous = null;
                 try
                 {
                     previous = tempPoly.Points.Last();
                 }
                 catch (Exception ex) { } // Silencing error
 
-                tempPoly.Points.Add(new Tuple<int, int>((int)position.X, (int)position.Y));
+                tempPoly.Points.Add(new Vertex((int)position.X, (int)position.Y));
 
                 if (previous is not null)
                 {
@@ -241,7 +222,7 @@ internal class MarkupWindowViewModel : BindableBase
                         X2 = point.Item1,
                         Y2 = point.Item2
                     };
-                    ImageCanvas.Children.Add(line);
+                    // ImageCanvas.Children.Add(line);
                 }
 
                 break;
@@ -255,6 +236,7 @@ internal class MarkupWindowViewModel : BindableBase
         {
             if (SelectedTool == MarkupTool.Polygon && tempPoly is not null && tempPoly.Points.Count() >= 3)
             {
+                SelectedImage.Markup.Remove(tempPoly);
                 tempPoly.AssignedClass = SelectedMarkupClass;
                 SelectedImage.Markup.Add(tempPoly);
                 tempPoly = null;
@@ -264,9 +246,11 @@ internal class MarkupWindowViewModel : BindableBase
 
         if (e.Key == Key.Escape)
         {
+            if (tempPoly is not null)
+                SelectedImage.Markup.Remove(tempPoly);
+
             tempPoly = null;
-            _firstPoint = null;
-            UpdateCanvas();
+            position = null;
         }
 
         if (e.Key == Key.Z && Keyboard.Modifiers == ModifierKeys.Control)
@@ -274,8 +258,7 @@ internal class MarkupWindowViewModel : BindableBase
             if (tempPoly is not null && tempPoly.Points.Count() > 0)
             {
                 // Remove last added poly line
-                tempPoly.Points.RemoveAt(tempPoly.Points.Count()-1);
-                ImageCanvas.Children.RemoveAt(ImageCanvas.Children.Count-1);
+
             }
         }
     }
@@ -286,33 +269,28 @@ internal class MarkupWindowViewModel : BindableBase
         {
             SelectedImage.Markup.Remove(SelectedMarkupDisplay);
         }
+
+        if (e.Key == Key.H && SelectedMarkupDisplay is not null)
+        {
+            if (SelectedMarkupDisplay.IsVisible)
+                SelectedMarkupDisplay.IsVisible = false;
+            else
+                SelectedMarkupDisplay.IsVisible = true;
+        }
     }
 
     private void ExecutePolygonTool()
     {
         SelectedTool = MarkupTool.Polygon;
-        _firstPoint = null;
+        position = null;
         UpdateCanvas();
     }
 
     private void ExecuteRectangleTool()
     {
         SelectedTool = MarkupTool.Rectangle;
-        _firstPoint = null;
+        position = null;
         UpdateCanvas();
-    }
-
-    private void OnCanvasLoaded(RoutedEventArgs e)
-    {
-        _imageCanvas = (Canvas) e.Source;
-
-        if (Project.Images.Count() > 0)
-            SelectedImage = Project.Images.ElementAt(0);
-    }
-
-    private void OnScrollViewLoaded(RoutedEventArgs e)
-    {
-        _scrollViewer = (ScrollViewer)e.Source;
     }
 
     private void ExecuteDeleteTool()
@@ -338,7 +316,7 @@ internal class MarkupWindowViewModel : BindableBase
     private void UpdateCanvas()
     {
         // Clear unused canvas elements
-        Image img = (Image)ImageCanvas.Children[0];
+        /*Image img = (Image)ImageCanvas.Children[0];
         ImageCanvas.Children.Clear();
         ImageCanvas.Children.Add(img);
 
@@ -361,12 +339,12 @@ internal class MarkupWindowViewModel : BindableBase
                 Models.Polygon polygon = (Models.Polygon)markup;
                 DrawPolygon(ImageCanvas, polygon.Points);
             }
-        }
+        }*/
     }
 
     private void DrawRectangle(Canvas canvas, Tuple<int, int> topCorner, Tuple<int, int> bottomCorner)
     {
-        var rect = new System.Windows.Shapes.Rectangle
+        /*var rect = new System.Windows.Shapes.Rectangle
         {
             Width = bottomCorner.Item1 - topCorner.Item1,
             Height = bottomCorner.Item2 - topCorner.Item2,
@@ -374,12 +352,12 @@ internal class MarkupWindowViewModel : BindableBase
             StrokeThickness = 2,
             Margin = new Thickness(topCorner.Item1, topCorner.Item2, 0, 0)
         };
-        canvas.Children.Add(rect);
+        canvas.Children.Add(rect);*/
     }
 
     private void DrawPolygon(Canvas canvas, IEnumerable<Tuple<int, int>> points)
     {
-        var previous = points.Last();
+        /*var previous = points.Last();
         foreach (var point in points)
         {
             var line = new System.Windows.Shapes.Line() {
@@ -389,7 +367,7 @@ internal class MarkupWindowViewModel : BindableBase
             };
             previous = point;
             canvas.Children.Add(line);
-        }
+        }*/
     }
 
     private IMarkupProject? ExecuteLoadProject(bool showDialog = true)

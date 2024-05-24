@@ -66,7 +66,7 @@ namespace App.MarkupProject.Models
                         new MarkupDTO(
                             polygon.AssignedClassID,
                             MarkupFigureType.polygon,
-                            polygon.Points
+                            polygon.Points.Select(v => v.ToTuple()).ToList()
                         )
                     );
                 }
@@ -77,7 +77,7 @@ namespace App.MarkupProject.Models
                         new MarkupDTO(
                             rectangle.AssignedClassID,
                             MarkupFigureType.bbox,
-                            rectangle.Points
+                            rectangle.Points.Select(v => v.ToTuple()).ToList()
                         )
                     );
                 }
@@ -119,7 +119,7 @@ namespace App.MarkupProject.Models
 
                                 foreach (var p in fig.Points)
                                 {
-                                    poly.Points.Add(p);
+                                    poly.Points.Add(new Vertex(p.Item1, p.Item2));
                                 }
 
                                 figures.Add(poly);
