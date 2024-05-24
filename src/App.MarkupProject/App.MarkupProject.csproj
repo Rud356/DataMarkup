@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\App.ProjectSettings\App.ProjectSettings.csproj" />
+    <ProjectReference Include="..\MVVM\MVVM.csproj" />
     <ProjectReference Include="..\Shared\App.Shared.csproj" />
   </ItemGroup>
 

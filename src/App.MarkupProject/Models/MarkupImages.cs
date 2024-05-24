@@ -14,6 +14,8 @@ using System.Drawing.Drawing2D;
 using System.Drawing;
 using System.Windows.Media;
 using System.DirectoryServices;
+using DynamicData.Binding;
+using System.Reactive.Linq;
 
 namespace App.MarkupProject.Models
 {

@@ -2,6 +2,7 @@
 using ReactiveUI.Fody.Helpers;
 using System.Collections.ObjectModel;
 using ReactiveUI;
+using System.Configuration;
 
 namespace App.MarkupProject.Models
 {
@@ -33,14 +34,16 @@ namespace App.MarkupProject.Models
             _isHidden = isHidden;
         }
 
+        private string _label = "Not assigned";
+
         [Reactive] public string AssignedClass {
             get {
-                if (_classID > 0 && _classID < _labels.Count) return _labels.ElementAt(_classID);
-                else return "Not assigned";
+                return _label;
             }
             set
             {
                 _classID = _labels.IndexOf(value);
+                _label = _labels[_classID];
             }
         }
 
