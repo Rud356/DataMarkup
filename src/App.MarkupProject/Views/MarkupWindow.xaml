@@ -59,8 +59,8 @@
                         </b:EventTrigger>
                     </b:Interaction.Triggers>
 
-                    <ItemsControl ItemsSource="{Binding SelectedImage}">
-                        <Canvas x:Name="Canvas" Width="{Binding SelectedImage.Resolution.Item1}" Height="{Binding SelectedImage.Resolution.Item2}" LayoutTransform="{Binding Scale}">
+                    <ItemsControl ItemsSource="{Binding SelectedImage}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Canvas VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="Canvas" Width="{Binding SelectedImage.Resolution.Item1}" Height="{Binding SelectedImage.Resolution.Item2}" LayoutTransform="{Binding Scale}">
                             <b:Interaction.Triggers>
                                 <b:EventTrigger EventName="MouseLeftButtonDown">
                                     <b:InvokeCommandAction Command="{Binding MouseLeftButtonDownCommand}" PassEventArgsToCommand="True"></b:InvokeCommandAction>
