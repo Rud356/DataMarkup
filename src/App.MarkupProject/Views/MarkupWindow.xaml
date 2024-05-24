@@ -44,18 +44,13 @@
                      DisplayMemberPath="Name"
                      SelectedItem="{Binding SelectedImage}"/>
         </Grid>
-        <Polygon Points="240,340 340,340 340,240 240,240">
-            
-        </Polygon>
+
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1">
             <!-- Центральная часть: поле редактирования изображения -->
             <Border Grid.Column="1" Grid.ColumnSpan="1" BorderBrush="Black" BorderThickness="1" Margin="5,5,5,5">
                 <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5,5,5,5">
 
                     <b:Interaction.Triggers>
-                        <b:EventTrigger EventName="Loaded">
-                            <b:InvokeCommandAction Command="{Binding SaveCanvas}" PassEventArgsToCommand="True"></b:InvokeCommandAction>
-                        </b:EventTrigger>
                         <b:EventTrigger EventName="PreviewMouseWheel">
                             <b:InvokeCommandAction Command="{Binding MouseWheelCommand}" PassEventArgsToCommand="True" />
                         </b:EventTrigger>
@@ -84,8 +79,8 @@
 
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type models:Polygon}">
-                                <Polygon Canvas.Top="0" Canvas.Left="0" Points="{Binding Converter={cv:FigureConverter}}" StrokeThickness="2" Stroke="PaleGreen">
-                                </Polygon>
+                                <Polygon Canvas.Top="0" Canvas.Left="0" Points="{Binding Converter={cv:FigureConverter}}" StrokeThickness="2" Stroke="PaleGreen"/>
+                                <!-- TODO: add different colors -->
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

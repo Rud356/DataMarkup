@@ -3,6 +3,9 @@ using ReactiveUI.Fody.Helpers;
 using System.Collections.ObjectModel;
 using ReactiveUI;
 using System.Configuration;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
+using Prism.Commands;
 
 namespace App.MarkupProject.Models
 {
@@ -16,12 +19,15 @@ namespace App.MarkupProject.Models
         private bool _isVisible;
         private ObservableCollection<string> _labels;
 
+        public ICommand DragDeltaCommand { get; }
+
         public Polygon(ref ObservableCollection<string> labels)
         {
             points = new();
             AssignedClassID = -1;
             IsVisible = true;
             _labels = labels;
+            DragDeltaCommand = new DelegateCommand<DragDeltaEventArgs>(OnDragDelta);
         }
 
         public Polygon(ref ObservableCollection<string> labels, int classID) : this(ref labels)
@@ -56,5 +62,16 @@ namespace App.MarkupProject.Models
         [Reactive] public ObservableCollection<Vertex> Points => points;
 
         public ref ObservableCollection<string> Labels { get => ref _labels; }
+
+        private void OnDragDelta(DragDeltaEventArgs e)
+        {
+            // Assuming Vertex has properties X and Y
+            var vertex = e.Source as Vertex;
+            if (vertex != null)
+            {
+                vertex.X += (int) e.HorizontalChange;
+                vertex.Y += (int) e.VerticalChange;
+            }
+        }
     }
 }

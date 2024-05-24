@@ -17,6 +17,7 @@ using App.ProjectSettings.DTO;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Runtime;
+using App.MarkupProject.Tools;
 
 
 namespace App.MarkupProject.ViewModels;
@@ -105,7 +106,6 @@ internal class MarkupWindowViewModel : BindableBase
         {
             _selectedImage = value;
             OnPropertyChanged(new PropertyChangedEventArgs("SelectedImage"));
-            UpdateCanvas();
         }
     }
 
@@ -258,7 +258,6 @@ internal class MarkupWindowViewModel : BindableBase
                 tempPoly.AssignedClass = SelectedMarkupClass;
                 SelectedImage.Markup.Add(tempPoly);
                 tempPoly = null;
-                UpdateCanvas();
             }
         }
 
@@ -301,14 +300,12 @@ internal class MarkupWindowViewModel : BindableBase
     {
         SelectedTool = MarkupTool.Polygon;
         position = null;
-        UpdateCanvas();
     }
 
     private void ExecuteRectangleTool()
     {
         SelectedTool = MarkupTool.Rectangle;
         position = null;
-        UpdateCanvas();
     }
 
     private void ExecuteDeleteTool()
@@ -329,63 +326,6 @@ internal class MarkupWindowViewModel : BindableBase
     private void ExecuteMovePointsTool()
     {
         SelectedTool = MarkupTool.MovePoints;
-    }
-
-    private void UpdateCanvas()
-    {
-        // Clear unused canvas elements
-        /*Image img = (Image)ImageCanvas.Children[0];
-        ImageCanvas.Children.Clear();
-        ImageCanvas.Children.Add(img);
-
-        foreach (var markup in SelectedImage.Markup)
-        {
-            if (markup.IsHidden)
-                // Skip rendering
-                continue;
-
-            if (markup.GetType() == typeof(Models.Rectangle))
-            {
-                Models.Rectangle rectangle = (Models.Rectangle)markup;
-                var topLeft = rectangle.Points[0];
-                var bottomRight = rectangle.Points[2];
-                DrawRectangle(ImageCanvas, topLeft, bottomRight);
-            }
-
-            if (markup.GetType() == typeof(Models.Polygon))
-            {
-                Models.Polygon polygon = (Models.Polygon)markup;
-                DrawPolygon(ImageCanvas, polygon.Points);
-            }
-        }*/
-    }
-
-    private void DrawRectangle(Canvas canvas, Tuple<int, int> topCorner, Tuple<int, int> bottomCorner)
-    {
-        /*var rect = new System.Windows.Shapes.Rectangle
-        {
-            Width = bottomCorner.Item1 - topCorner.Item1,
-            Height = bottomCorner.Item2 - topCorner.Item2,
-            Stroke = Brushes.Red,
-            StrokeThickness = 2,
-            Margin = new Thickness(topCorner.Item1, topCorner.Item2, 0, 0)
-        };
-        canvas.Children.Add(rect);*/
-    }
-
-    private void DrawPolygon(Canvas canvas, IEnumerable<Tuple<int, int>> points)
-    {
-        /*var previous = points.Last();
-        foreach (var point in points)
-        {
-            var line = new System.Windows.Shapes.Line() {
-                Stroke = Brushes.BlueViolet,
-                X1 = previous.Item1, Y1 = previous.Item2, 
-                X2 = point.Item1, Y2 = point.Item2
-            };
-            previous = point;
-            canvas.Children.Add(line);
-        }*/
     }
 
     private IMarkupProject? ExecuteLoadProject(bool showDialog = true)
