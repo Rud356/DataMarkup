@@ -10,6 +10,7 @@ using System.Text.Json.Serialization;
 using DynamicData.Tests;
 using App.ProjectSettings.Models.Interfaces;
 using App.ProjectSettings.Models.SupportedLoaderSources;
+using DynamicData.Aggregation;
 
 namespace App.ProjectSettings.Models.SupportedFormats
 {
@@ -64,7 +65,6 @@ namespace App.ProjectSettings.Models.SupportedFormats
                 categoryID++;
             }
 
-            // TODO: finish implementation
             List<object> images = new List<object>();
             List<object> annotations = new List<object>();
             int imageCounter = 0;
@@ -94,14 +94,25 @@ namespace App.ProjectSettings.Models.SupportedFormats
 
                     if (markup.MarkupType == MarkupFigureType.polygon)
                     {
-                        
+                        if (markup.Points.Count != 4)
+                        {
+                            break;
+                        }
+                        var bottom = markup.Points.Max();
+                        var top = markup.Points.Min();
+
                         foreach (Tuple<int, int> point in markup.Points)
                         {
-                            List<float> pointPosition = new();
-                            pointPosition.Add(point.Item1);
-                            pointPosition.Add(point.Item2);
+                            List<float> pointPosition = new()
+                            {
+                                point.Item1,
+                                point.Item2
+                            };
                             segmentation.Add(pointPosition);
                         }
+                        bbox.Add(top.Item1);
+                        bbox.Add(top.Item2);
+
                         area = GetArea(markup.Points);
                     }
                     else if (markup.MarkupType == MarkupFigureType.bbox)
