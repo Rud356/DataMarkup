@@ -20,7 +20,7 @@ public class PolyColorConverter : ConverterBase<PolyColorConverter>
         if (value is Models.Rectangle)
         {
             var rectangle = (Models.Rectangle)value;
-            if (rectangle.Points.Any(x => x.IsSelected))
+            if (rectangle.IsSelected || rectangle.Points.Any(x => x.IsSelected))
             {
                 return Brushes.SelectedBrush;
             }
@@ -29,8 +29,8 @@ public class PolyColorConverter : ConverterBase<PolyColorConverter>
 
         else if (value is Models.Polygon)
         {
-            var rectangle = (Models.Polygon) value;
-            if (rectangle.Points.Any(x => x.IsSelected))
+            var poly = (Models.Polygon) value;
+            if (poly.IsSelected || poly.Points.Any(x => x.IsSelected))
             {
                 return Brushes.SelectedBrush;
             }

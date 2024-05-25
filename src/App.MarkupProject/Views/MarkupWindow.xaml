@@ -79,8 +79,19 @@
 
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type models:Polygon}">
-                                <Polygon Canvas.Top="0" Canvas.Left="0" Points="{Binding Converter={cv:FigureConverter}}" StrokeThickness="2" Stroke="{Binding Converter={cv:PolyColorConverter}}" Visibility="{Binding IsVisible, Converter={cv:PolysVisibilityConverter}}"/>
-                                <!-- TODO: add different colors -->
+                                <Polygon Canvas.Top="0" Canvas.Left="0"
+                                    Points="{Binding Converter={cv:FigureConverter}}"
+                                    StrokeThickness="4" Stroke="{Binding Converter={cv:PolyColorConverter}}"
+                                    Visibility="{Binding IsVisible, Converter={cv:PolysVisibilityConverter}}"
+                                    Opacity="0.6">
+                                    <b:Interaction.Triggers>
+                                        <b:EventTrigger EventName="MouseRightButtonDown">
+                                            <b:InvokeCommandAction
+                                                Command="{Binding DataContext.PolygonClickedCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
+                                                CommandParameter="{Binding}"/>
+                                        </b:EventTrigger>
+                                    </b:Interaction.Triggers>
+                                </Polygon>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -100,8 +111,6 @@
             <Button Content="Перемещение фигуры" Margin="0,0,0,5" Command="{Binding MoveFigureToolCommand}"/>
             <Button Content="Перемещение точек" Margin="0,0,0,5" Command="{Binding MovePointsToolCommand}"/>
             <Button Content="Удаление точек" Margin="0,0,0,5" Command="{Binding DeleteToolCommand}"/>
-            <Button Content="Выбор фигуры" Margin="0,0,0,5" Command="{Binding ChooseFigureToolCommand}"/>
-
             <TextBlock Text="Выход:" Margin="0,0,0,5"/>
             <Button Command="{Binding ToSettings}" Content="К настройкам" Margin="0,0,0,5"/>
             <Button Command="{Binding GoBackCommand}" Content="Закрыть проект" Margin="0,0,0,5"/>
@@ -120,7 +129,7 @@
                 VerticalAlignment="Stretch"
                 VerticalContentAlignment="Stretch"
                 HorizontalAlignment="Stretch"
-                SelectedItem="{Binding SelectedMarkupDisplay}"
+                SelectedItem="{Binding SelectedMarkupDisplay, Mode=TwoWay}"
                 ItemsSource="{Binding SelectedImage.Markup}" Margin="0,0,0,5" MinHeight="689" d:ItemsSource="{d:SampleData ItemCount=5}"
                 >
                 <b:Interaction.Triggers>

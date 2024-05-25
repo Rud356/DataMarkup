@@ -14,6 +14,8 @@ namespace App.MarkupProject.Models.Interfaces
         public int AssignedClassID { get; set; }
         public bool IsVisible { get; set; }
 
+        public bool IsSelected { get; set; }
+
         public ref ObservableCollection<string> Labels { get; }
 
         public ObservableCollection<Vertex> Points { get; }

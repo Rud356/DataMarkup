@@ -18,6 +18,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Runtime;
 using App.MarkupProject.Tools;
+using ReactiveUI;
 
 
 namespace App.MarkupProject.ViewModels;
@@ -80,13 +81,12 @@ internal class MarkupWindowViewModel : BindableBase, INavigationAware
     public ICommand PolygonToolCommand { get; }
     public ICommand RectangleToolCommand { get; }
     public ICommand DeleteToolCommand { get; }
-    public ICommand ChooseFigureToolCommand { get; }
     public ICommand MoveFigureToolCommand { get; }
     public ICommand MovePointsToolCommand { get; }
     public ICommand GoBackCommand { get; }
     public ICommand MouseLeftButtonDownCommand { get; }
     public ICommand MouseWheelCommand { get; }
-
+    public ICommand PolygonClickedCommand { get; }
     public ICommand CanvasKeyStrokeCommand { get; }
 
     public ICommand SelectionKeyboardCommand { get; }
@@ -152,12 +152,12 @@ internal class MarkupWindowViewModel : BindableBase, INavigationAware
         PolygonToolCommand = new DelegateCommand(ExecutePolygonTool);
         RectangleToolCommand = new DelegateCommand(ExecuteRectangleTool);
         DeleteToolCommand = new DelegateCommand(ExecuteDeleteTool);
-        ChooseFigureToolCommand = new DelegateCommand(ExecuteChooseFigureTool);
         MoveFigureToolCommand = new DelegateCommand(ExecuteMoveFigureTool);
         MovePointsToolCommand = new DelegateCommand(ExecuteMovePointsTool);
         MouseWheelCommand = new DelegateCommand<MouseWheelEventArgs>(OnMouseWheel);
         CanvasKeyStrokeCommand = new DelegateCommand<KeyEventArgs>(OnKeyStrokeEvent);
         SelectionKeyboardCommand = new DelegateCommand<KeyEventArgs>(SelectionKeyboard);
+        PolygonClickedCommand = new DelegateCommand<Polygon>(PolygonClicked);
 
         if (Project.ConfigLoader.ProjectConfigObj.MarkupClasses.Count() != 0)
             SelectedMarkupClass = Project.ConfigLoader.ProjectConfigObj.MarkupClasses.ElementAt(0);
@@ -251,6 +251,10 @@ internal class MarkupWindowViewModel : BindableBase, INavigationAware
                 SelectedImage.Markup.Add(tempPoly);
                 tempPoly = null;
             }
+            else
+            {
+                tempPoly = null;
+            }
         }
 
         if (e.Key == Key.Escape)
@@ -266,9 +270,32 @@ internal class MarkupWindowViewModel : BindableBase, INavigationAware
         {
             if (tempPoly is not null && tempPoly.Points.Count() > 0)
             {
-                // Remove last added poly line
+                if (tempPoly.Points.Count() - 1 == 0)
+                {
+                    SelectedImage.Markup.Remove(tempPoly);
+                    tempPoly = null;
+                    return;
+                }
 
+                // Remove last added poly line
+                var i = SelectedImage.Markup.IndexOf(tempPoly);
+
+                tempPoly = (Polygon)SelectedImage.Markup[i];
+                SelectedImage.Markup.RemoveAt(i);
+                tempPoly.Points.RemoveAt(tempPoly.Points.Count() - 1);
+                SelectedImage.Markup.Add(tempPoly);
             }
+        }
+
+        if (e.Key == Key.Delete && SelectedMarkupDisplay is not null)
+        {
+            SelectedImage.Markup.Remove(SelectedMarkupDisplay);
+            SelectedMarkupDisplay = null;
+        }
+
+        if (e.Key == Key.H && SelectedMarkupDisplay is not null)
+        {
+            SelectedMarkupDisplay.IsVisible = !SelectedMarkupDisplay.IsVisible;
         }
     }
 
@@ -281,11 +308,13 @@ internal class MarkupWindowViewModel : BindableBase, INavigationAware
 
         if (e.Key == Key.H && SelectedMarkupDisplay is not null)
         {
-            if (SelectedMarkupDisplay.IsVisible)
-                SelectedMarkupDisplay.IsVisible = false;
-            else
-                SelectedMarkupDisplay.IsVisible = true;
+            SelectedMarkupDisplay.IsVisible = !SelectedMarkupDisplay.IsVisible;
         }
+    }
+
+    private void PolygonClicked(Polygon poly)
+    {
+        SetPolygonSelection(poly); 
     }
 
     private void ExecutePolygonTool()
@@ -305,11 +334,6 @@ internal class MarkupWindowViewModel : BindableBase, INavigationAware
         SelectedTool = MarkupTool.Delete;
     }
 
-    private void ExecuteChooseFigureTool()
-    {
-        SelectedTool = MarkupTool.ChooseFigure;
-    }
-
     private void ExecuteMoveFigureTool()
     {
         SelectedTool = MarkupTool.MoveFigure;
@@ -318,6 +342,32 @@ internal class MarkupWindowViewModel : BindableBase, INavigationAware
     private void ExecuteMovePointsTool()
     {
         SelectedTool = MarkupTool.MovePoints;
+    }
+
+    private void SetPolygonSelection(Polygon poly)
+    {
+        if (SelectedMarkupDisplay != null)
+        {
+            // Find the selected polygon in the list
+            var selected = SelectedImage.Markup.FirstOrDefault(p => p == SelectedMarkupDisplay);
+            if (selected != null)
+            {
+                selected.IsSelected = false;
+                SelectedImage.Markup.Remove(selected);
+                SelectedImage.Markup.Add(selected);
+            }
+            SelectedMarkupDisplay = null;
+        }
+
+
+        poly.IsSelected = true;
+        var i = SelectedImage.Markup.IndexOf(poly);
+        if (i >= 0)
+        {
+            SelectedImage.Markup.RemoveAt(i);
+            SelectedImage.Markup.Add(poly);
+            SelectedMarkupDisplay = SelectedImage.Markup.Last();
+        }
     }
 
     private IMarkupProject? ExecuteLoadProject(bool showDialog = true)
