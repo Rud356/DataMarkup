@@ -81,7 +81,7 @@ namespace App.ProjectSettings.Models
 
             if (isPartiallyMalformed)
             {
-                SaveConfigDTO(cfg);
+                SaveConfigDTO(cfg, projectConfigPath);
             }
 
             ProjectConfigObj = new ProjectConfig(
@@ -95,12 +95,19 @@ namespace App.ProjectSettings.Models
 
         public void SaveConfig(IProjectConfig config)
         {
-            throw new NotImplementedException();
+            ConfigDTO cfg = new ConfigDTO(
+                config.ProjectName,
+                SupportedFormats.SupportedFormats.FormatToEnum(config.DataFormat).ToString(),
+                config.ExcludedImages.ToList(),
+                config.MarkupClasses.ToList()
+            );
+            SaveConfigDTO(cfg, config.ProjectConfigPath);
         }
 
-        private void SaveConfigDTO(ConfigDTO config)
+        private void SaveConfigDTO(ConfigDTO config, string saveTo)
         {
-            throw new NotImplementedException();
+            string json = JsonConvert.SerializeObject(config, Formatting.Indented);
+            File.WriteAllText(saveTo, json);
         }
 
         public static string DefaultConfigString()

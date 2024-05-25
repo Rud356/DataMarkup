@@ -24,14 +24,14 @@
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         
         <!-- Левая часть: поле загрузки изображений -->
         <Grid Grid.Column="0" VerticalAlignment="Top" Margin="5,5,5,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Text="Загрузить изображение:" Margin="0,0,0,5"/>
             <ListBox Grid.Row="1" 

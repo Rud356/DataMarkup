@@ -5,6 +5,7 @@ using ReactiveUI.Fody.Helpers;
 using System.IO;
 using App.ProjectSettings.Models.Interfaces;
 using System.Windows.Input;
+using DynamicData;
 
 namespace App.ProjectSettings.Models
 {
@@ -64,8 +65,7 @@ namespace App.ProjectSettings.Models
 
         public void renameMarkupClassTo(string markupClassName, string newMarkupClassName)
         {
-            _markupClasses.Remove(markupClassName);
-            _markupClasses.Add(newMarkupClassName);
+            _markupClasses.Replace(markupClassName, newMarkupClassName);
         }
 
         public void excludeImage(string ImagePath)
@@ -79,10 +79,6 @@ namespace App.ProjectSettings.Models
         public void includeImage(string ImagePath)
         {
             _excludedImages.Remove(ImagePath);
-        }
-
-        private void PerformToMarkup()
-        {
         }
     }
 }

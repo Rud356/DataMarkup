@@ -25,6 +25,8 @@ public class ProjectSettingsViewModel : BindableBase, INavigationAware
     private IProjectConfigLoader _configLoader;
     public ICommand ToMarkup { get; }
 
+    public ICommand DeleteClassCommand { get; }
+
     public IProjectConfigLoader ConfigLoader => _configLoader;
 
     public ProjectSettingsViewModel(IRegionManager regionManager)
@@ -37,6 +39,12 @@ public class ProjectSettingsViewModel : BindableBase, INavigationAware
             regionManager.RequestNavigate("MainRegion", "MarkupWindow", parameters);
         }
         );
+        DeleteClassCommand = new DelegateCommand<string>(DeleteClass);
+    }
+
+    private void DeleteClass(string className)
+    {
+        ConfigLoader.ProjectConfigObj.removeMarkupClass(className);
     }
 
     public void OnNavigatedTo(NavigationContext navigationContext)
