@@ -32,7 +32,7 @@ public enum MarkupTool
     MovePoints
 }
 
-internal class MarkupWindowViewModel : BindableBase
+internal class MarkupWindowViewModel : BindableBase, INavigationAware
 {
     private Vertex? position = null; // Первая точка для создания прямоугольника
 
@@ -105,6 +105,8 @@ internal class MarkupWindowViewModel : BindableBase
         set
         {
             _selectedImage = value;
+            Scale.ScaleX = 1;
+            Scale.ScaleY = 1;
             OnPropertyChanged(new PropertyChangedEventArgs("SelectedImage"));
         }
     }
@@ -128,16 +130,24 @@ internal class MarkupWindowViewModel : BindableBase
                 regionManager.RequestNavigate("MainRegion", "MainView");
             }
         );
+        if (_project is null)
+            _project = ExecuteLoadProject();
+
+        if (_project is null) {
+            regionManager.RequestNavigate("MainRegion", "MainView");
+            return;
+        }
+
         ToSettings = new DelegateCommand(
             () =>
             {
-                regionManager.RequestNavigate("MainRegion", "ProjectSettingsView");
+                var parameters = new NavigationParameters
+                {
+                    { "configLoader", _project.ConfigLoader }
+                };
+                regionManager.RequestNavigate("MainRegion", "ProjectSettingsView", parameters);
             }
         );
-        _project = ExecuteLoadProject();
-
-        if (_project == null)
-            regionManager.RequestNavigate("MainRegion", "MainView");
 
         PolygonToolCommand = new DelegateCommand(ExecutePolygonTool);
         RectangleToolCommand = new DelegateCommand(ExecuteRectangleTool);
@@ -215,34 +225,16 @@ internal class MarkupWindowViewModel : BindableBase
                 if (tempPoly == null)
                 {
                     tempPoly = new Models.Polygon(ref _project.Labels);
+                    SelectedImage.Markup.Add(tempPoly);
                 }
+                var i = SelectedImage.Markup.IndexOf(tempPoly);
+
+                tempPoly = (Polygon) SelectedImage.Markup[i];
+                SelectedImage.Markup.RemoveAt(i);
 
                 Point position = e.GetPosition((Canvas) e.Source);
-                Vertex? previous = null;
-                try
-                {
-                    previous = tempPoly.Points.Last();
-                }
-                catch (Exception ex) { } // Silencing error
-
                 tempPoly.Points.Add(new Vertex((int)position.X, (int)position.Y));
-
-                if (previous is not null)
-                {
-                        
-                    var point = tempPoly.Points.Last();
-
-                    var line = new System.Windows.Shapes.Line()
-                    {
-                        Stroke = System.Windows.Media.Brushes.BlueViolet,
-                        X1 = previous.Item1,
-                        Y1 = previous.Item2,
-                        X2 = point.Item1,
-                        Y2 = point.Item2
-                    };
-                    // ImageCanvas.Children.Add(line);
-                }
-
+                SelectedImage.Markup.Add(tempPoly);
                 break;
             }
         }
@@ -363,5 +355,24 @@ internal class MarkupWindowViewModel : BindableBase
         }
 
         return markupProject;
+    }
+
+    public void OnNavigatedTo(NavigationContext navigationContext)
+    {
+        if (navigationContext.Uri.ToString() == "MainView")
+        {
+            if (_project == null)
+                _project = ExecuteLoadProject();
+        }
+    }
+
+    public bool IsNavigationTarget(NavigationContext navigationContext)
+    {
+        return true;
+    }
+
+    public void OnNavigatedFrom(NavigationContext navigationContext)
+    {
+
     }
 }

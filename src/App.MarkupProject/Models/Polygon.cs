@@ -56,7 +56,7 @@ namespace App.MarkupProject.Models
         [Reactive] public int AssignedClassID { get => _classID; set => _classID = value; }
         [Reactive] public bool IsVisible {
             get => _isVisible;
-            set => _isVisible = value;
+            set => this.RaiseAndSetIfChanged(ref _isVisible, value);
         }
 
         [Reactive] public ObservableCollection<Vertex> Points => points;

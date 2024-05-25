@@ -79,7 +79,7 @@
 
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type models:Polygon}">
-                                <Polygon Canvas.Top="0" Canvas.Left="0" Points="{Binding Converter={cv:FigureConverter}}" StrokeThickness="2" Stroke="PaleGreen"/>
+                                <Polygon Canvas.Top="0" Canvas.Left="0" Points="{Binding Converter={cv:FigureConverter}}" StrokeThickness="2" Stroke="{Binding Converter={cv:PolyColorConverter}}" Visibility="{Binding IsVisible, Converter={cv:PolysVisibilityConverter}}"/>
                                 <!-- TODO: add different colors -->
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -146,7 +146,7 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <ComboBox Grid.Row="1" HorizontalAlignment="Stretch" ItemsSource="{Binding Labels}" SelectedItem="{Binding AssignedClassID, Mode=TwoWay}" Text="{Binding AssignedClass, Mode=TwoWay}" Margin="5,5,5,5"/>
-                            <CheckBox Grid.Row="1" IsChecked="{Binding IsVisible, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Right" Content="H" Grid.Column="1" Margin="5,5,5,5"></CheckBox>
+                            <CheckBox Grid.Row="1" IsChecked="{Binding IsVisible, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="1" Margin="5,5,5,5"></CheckBox>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
