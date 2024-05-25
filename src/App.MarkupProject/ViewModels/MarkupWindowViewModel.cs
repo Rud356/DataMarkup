@@ -361,18 +361,22 @@ internal class MarkupWindowViewModel : BindableBase, INavigationAware
     {
         if (navigationContext.Uri.ToString() == "MainView")
         {
-            if (_project == null)
-                _project = ExecuteLoadProject();
+            IsNavTargert = true;
         }
     }
 
+    private bool IsNavTargert = true;
+
     public bool IsNavigationTarget(NavigationContext navigationContext)
     {
-        return true;
+        return IsNavTargert;
     }
 
     public void OnNavigatedFrom(NavigationContext navigationContext)
     {
-
+        if (navigationContext.Uri.ToString() == "MainView")
+        {
+            IsNavTargert = false;
+        }
     }
 }
