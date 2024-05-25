@@ -16,40 +16,58 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Runtime;
 using App.Shared;
+using Prism.Events;
+using App.ProjectSettings.Events;
+using ReactiveUI.Fody.Helpers;
 
 
 namespace App.ProjectSettings.ViewModels;
 
 public class ProjectSettingsViewModel : BindableBase, INavigationAware
 {
-    private IProjectConfigLoader _configLoader;
+    private IEventAggregator _eventAggregator;
+    private IProjectConfigLoader? _config;
     public ICommand ToMarkup { get; }
 
     public ICommand DeleteClassCommand { get; }
 
-    public IProjectConfigLoader ConfigLoader => _configLoader;
-
-    public ProjectSettingsViewModel(IRegionManager regionManager)
+    [Reactive]
+    public IProjectConfigLoader? Config
     {
+        get { return _config; }
+        set
+        {
+            this.SetProperty(ref _config, value);
+        }
+    }
+
+    private bool applyChanges = false;
+
+    public ProjectSettingsViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+    {
+        _eventAggregator = eventAggregator;
         regionManager.RequestNavigate(Regions.MainRegion, Navigation.MarkupPage);
         ToMarkup = new DelegateCommand(() =>
         {
-            var parameters = new NavigationParameters();
-            parameters.Add("projectConfig", _configLoader?.ProjectConfigObj);
-            regionManager.RequestNavigate("MainRegion", "MarkupWindow", parameters);
+            regionManager.RequestNavigate("MainRegion", "MarkupWindow");
         }
         );
+        _eventAggregator.GetEvent<ConfigSharingEvent>().Subscribe(HandleGettingConfig);
         DeleteClassCommand = new DelegateCommand<string>(DeleteClass);
+    }
+
+    private void HandleGettingConfig(IProjectConfigLoader config)
+    {
+        _config = config;
     }
 
     private void DeleteClass(string className)
     {
-        ConfigLoader.ProjectConfigObj.removeMarkupClass(className);
+        Config?.ProjectConfigObj.removeMarkupClass(className);
     }
 
     public void OnNavigatedTo(NavigationContext navigationContext)
     {
-        _configLoader = navigationContext.Parameters.GetValue<IProjectConfigLoader>("configLoader");
         // Now you can use _configLoader to edit the config
     }
 
@@ -61,6 +79,10 @@ public class ProjectSettingsViewModel : BindableBase, INavigationAware
     public void OnNavigatedFrom(NavigationContext navigationContext)
     {
         // Save the changes to the config before navigating away
-        // _configLoader.SaveConfig(_configLoader.ProjectConfigObj);
+        if (!applyChanges && _config is not null)
+        {
+            _config?.SaveConfig(_config.ProjectConfigObj);
+            navigationContext.Parameters.Add("projectConfig", _config?.ProjectConfigObj);
+        }
     }
 }

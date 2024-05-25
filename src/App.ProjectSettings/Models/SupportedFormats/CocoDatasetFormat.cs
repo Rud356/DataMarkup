@@ -101,6 +101,9 @@ namespace App.ProjectSettings.Models.SupportedFormats
                         var bottom = markup.Points.Max();
                         var top = markup.Points.Min();
 
+                        if (top is null || bottom is null)
+                            break;
+
                         foreach (Tuple<int, int> point in markup.Points)
                         {
                             List<float> pointPosition = new()
@@ -112,6 +115,9 @@ namespace App.ProjectSettings.Models.SupportedFormats
                         }
                         bbox.Add(top.Item1);
                         bbox.Add(top.Item2);
+                        int w = bottom.Item1 - top.Item1, h = bottom.Item2 - top.Item2;
+                        bbox.Append(w);
+                        bbox.Append(h);
 
                         area = GetArea(markup.Points);
                     }

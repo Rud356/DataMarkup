@@ -12,6 +12,8 @@ using SamplePrism2024.About;
 using App.AboutSection.Views;
 using App.MarkupProject.Views;
 using App.ProjectSettings.Views;
+using Prism.Events;
+using System.ComponentModel;
 namespace App;
 
 /// <summary>
@@ -22,6 +24,7 @@ public partial class MainApp
     protected override void RegisterTypes(IContainerRegistry containerRegistry)
     {
         containerRegistry.RegisterSingleton<AppViewModel>();
+        containerRegistry.RegisterSingleton<IEventAggregator, EventAggregator>();
         containerRegistry.RegisterForNavigation<MainView>();
         containerRegistry.RegisterForNavigation<MainView>();
     }

@@ -24,8 +24,16 @@ namespace App.MarkupProject.Models
             loadImages();
         }
 
+        IProjectConfigLoader _projConf;
+
         [Reactive]
-        public IProjectConfigLoader ConfigLoader { get; }
+        public IProjectConfigLoader ConfigLoader {
+            get {  return _projConf; }
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _projConf, value);
+            }
+        }
 
         [Reactive]
         public IMarkupFormatter Formatter

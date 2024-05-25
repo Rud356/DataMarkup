@@ -19,6 +19,9 @@ using System.Reactive.Linq;
 using System.Runtime;
 using App.MarkupProject.Tools;
 using ReactiveUI;
+using Prism.Events;
+using App.ProjectSettings.Events;
+using DynamicData;
 
 
 namespace App.MarkupProject.ViewModels;
@@ -35,6 +38,8 @@ public enum MarkupTool
 
 internal class MarkupWindowViewModel : BindableBase, INavigationAware
 {
+    private readonly IEventAggregator _eventAggregator;
+
     private Vertex? position = null; // Первая точка для создания прямоугольника
 
     public Vertex? Position
@@ -122,8 +127,10 @@ internal class MarkupWindowViewModel : BindableBase, INavigationAware
         }
     }
 
-    public MarkupWindowViewModel(IRegionManager regionManager)
+    public MarkupWindowViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
     {
+        _eventAggregator = eventAggregator;
+
         MouseLeftButtonDownCommand = new DelegateCommand<MouseButtonEventArgs>(MouseLeftButtonDown);
         GoBackCommand = new DelegateCommand(() =>
             {
@@ -141,11 +148,8 @@ internal class MarkupWindowViewModel : BindableBase, INavigationAware
         ToSettings = new DelegateCommand(
             () =>
             {
-                var parameters = new NavigationParameters
-                {
-                    { "configLoader", _project.ConfigLoader }
-                };
-                regionManager.RequestNavigate("MainRegion", "ProjectSettingsView", parameters);
+                regionManager.RequestNavigate("MainRegion", "ProjectSettingsView");
+                _eventAggregator.GetEvent<ConfigSharingEvent>().Publish(_project.ConfigLoader);
             }
         );
 
@@ -158,9 +162,6 @@ internal class MarkupWindowViewModel : BindableBase, INavigationAware
         CanvasKeyStrokeCommand = new DelegateCommand<KeyEventArgs>(OnKeyStrokeEvent);
         SelectionKeyboardCommand = new DelegateCommand<KeyEventArgs>(SelectionKeyboard);
         PolygonClickedCommand = new DelegateCommand<Polygon>(PolygonClicked);
-
-        if (Project.ConfigLoader.ProjectConfigObj.MarkupClasses.Count() != 0)
-            SelectedMarkupClass = Project.ConfigLoader.ProjectConfigObj.MarkupClasses.ElementAt(0);
     }
 
     private void OnMouseWheel(MouseWheelEventArgs e)
@@ -409,10 +410,12 @@ internal class MarkupWindowViewModel : BindableBase, INavigationAware
 
     public void OnNavigatedTo(NavigationContext navigationContext)
     {
-        if (navigationContext.Uri.ToString() == "MainView")
-        {
-            IsNavTargert = true;
-        }
+        // Force refresh
+        Project.ConfigLoader.ProjectConfigObj.MarkupClasses.Add("");
+        Project.ConfigLoader.ProjectConfigObj.MarkupClasses.RemoveAt(Project.ConfigLoader.ProjectConfigObj.MarkupClasses.Count()-1);
+
+        if (Project.ConfigLoader.ProjectConfigObj.MarkupClasses.Count() != 0)
+            SelectedMarkupClass = Project.ConfigLoader.ProjectConfigObj.MarkupClasses.ElementAt(0);
     }
 
     private bool IsNavTargert = true;
