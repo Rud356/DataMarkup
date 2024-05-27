@@ -10,7 +10,6 @@ using System.Text.Json.Serialization;
 using DynamicData.Tests;
 using App.ProjectSettings.Models.Interfaces;
 using App.ProjectSettings.Models.SupportedLoaderSources;
-using DynamicData.Aggregation;
 
 namespace App.ProjectSettings.Models.SupportedFormats
 {
@@ -65,6 +64,7 @@ namespace App.ProjectSettings.Models.SupportedFormats
                 categoryID++;
             }
 
+            // TODO: finish implementation
             List<object> images = new List<object>();
             List<object> annotations = new List<object>();
             int imageCounter = 0;
@@ -106,11 +106,9 @@ namespace App.ProjectSettings.Models.SupportedFormats
 
                         foreach (Tuple<int, int> point in markup.Points)
                         {
-                            List<float> pointPosition = new()
-                            {
-                                point.Item1,
-                                point.Item2
-                            };
+                            List<float> pointPosition = new();
+                            pointPosition.Add(point.Item1);
+                            pointPosition.Add(point.Item2);
                             segmentation.Add(pointPosition);
                         }
                         bbox.Add(top.Item1);
@@ -118,7 +116,7 @@ namespace App.ProjectSettings.Models.SupportedFormats
                         int w = bottom.Item1 - top.Item1, h = bottom.Item2 - top.Item2;
                         bbox.Append(w);
                         bbox.Append(h);
-
+                        
                         area = GetArea(markup.Points);
                     }
                     else if (markup.MarkupType == MarkupFigureType.bbox)
