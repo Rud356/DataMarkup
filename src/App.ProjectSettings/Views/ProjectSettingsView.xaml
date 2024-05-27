@@ -8,7 +8,7 @@
              xmlns:viewmodels="clr-namespace:App.ProjectSettings.ViewModels"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewmodels:ProjectSettingsViewModel}"
-             d:Background="White"
+             d:Background="LightSteelBlue"
              d:DesignHeight="720" d:DesignWidth="1280">
     <Grid>
         <Grid.RowDefinitions>
@@ -26,12 +26,12 @@
 
 
         <!-- Кнопка Назад -->
-        <Button Content="Назад" Command="{Binding ToMarkup}" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,5,5,5"/>
+        <Button Content="Назад" Command="{Binding ToMarkup}" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,5,5,5" Style="{StaticResource ButtonStyle}"/>
 
         <!-- Кнопки применения и отмены -->
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="5">
-            <Button Content="Применить" HorizontalAlignment="Stretch" Margin="5"/>
-            <Button Content="Отмена" HorizontalAlignment="Stretch" Margin="5"/>
+            <Button Content="Применить" Margin="6" Style="{StaticResource ButtonStyle}" Width="80"/>
+            <Button Content="Отмена" Margin="6" Style="{StaticResource ButtonStyle}" Width="60"/>
         </StackPanel>
     </Grid>
 </UserControl>

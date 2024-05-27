@@ -6,21 +6,45 @@
         xmlns:viewmodels="clr-namespace:App.AboutSection.ViewModels"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance viewmodels:AboutViewModel}"
-        d:Background="White"
+        d:Background="LightSteelBlue"
         d:DesignHeight="720" d:DesignWidth="1280">
-    <Grid>
+    <Grid Background="LightSteelBlue">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"></ColumnDefinition>
             <ColumnDefinition Width="8*"></ColumnDefinition>
             <ColumnDefinition Width="2*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        
-        <Grid Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="Auto" Width="Auto" Margin="10,10,10,10">
-            <TextBlock Grid.Column="1" HorizontalAlignment="Center">
-                DataMarkup - ПО для разметки данных для нейросетей (v1.0.0)
+        <Grid Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10,10,10,10">
+            <TextBlock TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="16" Margin="20">
+                <Run Text="DataMarkup - ПО для разметки данных для нейросетей (v1.0.0)" FontSize="20" FontWeight="Bold"/>
+                <LineBreak />
+                <LineBreak />
+                <Run Text="DataMarkup" FontWeight="Bold"/>
+                <Run Text=" — это программное обеспечение, предназначенное для разметки данных, используемых в обучении нейросетей. В версии 1.0.0, " />
+                <Run Text="DataMarkup"/>
+                <Run Text=" предоставляет набор функций, которые делают процесс разметки данных простым, интуитивным и высокоэффективным." />
+                <LineBreak />
+                <LineBreak />
+                <Run Text="Основные функции:" FontWeight="Bold"/>
+                <LineBreak />
+                <Run Text="Интуитивно понятный интерфейс: " FontWeight="Bold"/>
+                <Run Text="DataMarkup предоставляет удобный и легкий в освоении интерфейс, который позволяет пользователям быстро начать работу без необходимости долгого обучения." />
+                <LineBreak />
+                <LineBreak />
+                <Run Text="Поддержка различных форматов данных: " FontWeight="Bold"/>
+                <Run Text="ПО поддерживает множество форматов изображений, что позволяет использовать его в самых различных проектах машинного обучения." />
+                <LineBreak />
+                <LineBreak />
+                <Run Text="Инструменты для точной разметки: " FontWeight="Bold"/>
+                <Run Text="В набор инструментов входят функции для создания полигонов, прямоугольников и других фигур, а также инструменты для перемещения и редактирования уже созданных разметок." />
+                <LineBreak />
+                <LineBreak />
+                <Run Text="Управление проектами: " FontWeight="Bold"/>
+                <Run Text="Встроенные функции для управления проектами позволяют организовать и контролировать процесс разметки данных на всех его этапах, обеспечивая высокую продуктивность и согласованность." />
             </TextBlock>
         </Grid>
+
         <!-- Добавляем кнопку "Назад" -->
-        <Button Grid.Column="2" Command="{Binding GoBackCommand}" Content="Назад" VerticalAlignment="Bottom" Margin="10,10,10,10" HorizontalAlignment="Stretch"/>
+        <Button Grid.Column="2" Command="{Binding GoBackCommand}" Content="Назад" VerticalAlignment="Bottom" Margin="10,10,10,10" HorizontalAlignment="Stretch" Style="{StaticResource ButtonStyle}"/>
     </Grid>
 </UserControl>
