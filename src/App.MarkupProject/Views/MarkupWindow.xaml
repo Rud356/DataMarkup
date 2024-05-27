@@ -11,7 +11,7 @@
              xmlns:behaviors="clr-namespace:PolygonsMarkingEditor.Behaviors"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewmodels:MarkupWindowViewModel}"
-             d:Background="White"
+             d:Background="CornflowerBlue"
              d:DesignHeight="720" d:DesignWidth="1280">
     <UserControl.Resources>
         <ResourceDictionary/>
@@ -33,7 +33,7 @@
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="Загрузить изображение:" Margin="0,0,0,5"/>
+            <TextBlock Grid.Row="0" Text="Загрузить изображение:" Style="{StaticResource TitleTextBlockStyle}"/>
             <ListBox Grid.Row="1" 
                      VerticalAlignment="Stretch"
                      VerticalContentAlignment="Stretch"
@@ -42,7 +42,8 @@
                      ScrollViewer.VerticalScrollBarVisibility="Auto"
                      ItemsSource="{Binding Project.Images}" 
                      DisplayMemberPath="Name"
-                     SelectedItem="{Binding SelectedImage}"/>
+                     SelectedItem="{Binding SelectedImage}"
+                     Background="#CCE5FF"/>
         </Grid>
 
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1">
@@ -101,19 +102,19 @@
 
         <!-- Правая часть: кнопки "Инструменты" и кнопка "Назад" -->
         <StackPanel Grid.Column="2" VerticalAlignment="Top" Margin="5,5,5,0" HorizontalAlignment="Stretch">
-            <TextBlock Text="Выбор класса для разметки:" Margin="5,0,0,5"/>
+            <TextBlock Text="Выбор класса:" Margin="5,0,0,5" Style="{StaticResource TitleTextBlockStyle}"/>
             <ComboBox ItemsSource="{Binding Project.ConfigLoader.ProjectConfigObj.MarkupClasses}"
                       SelectedItem="{Binding SelectedMarkupClass}"/>
 
-            <TextBlock Text="Инструменты:" Margin="5,0,0,5"/>
-            <Button Content="Полигон" Margin="0,0,0,5" Command="{Binding PolygonToolCommand}"/>
-            <Button Content="Прямоугольник" Margin="0,0,0,5" Command="{Binding RectangleToolCommand}" />
-            <Button Content="Перемещение фигуры" Margin="0,0,0,5" Command="{Binding MoveFigureToolCommand}"/>
-            <Button Content="Перемещение точек" Margin="0,0,0,5" Command="{Binding MovePointsToolCommand}"/>
-            <Button Content="Удаление точек" Margin="0,0,0,5" Command="{Binding DeleteToolCommand}"/>
-            <TextBlock Text="Выход:" Margin="0,0,0,5"/>
-            <Button Command="{Binding ToSettings}" Content="К настройкам" Margin="0,0,0,5"/>
-            <Button Command="{Binding GoBackCommand}" Content="Закрыть проект" Margin="0,0,0,5"/>
+            <TextBlock Text="Инструменты:"  Margin="5,0,0,5" Style="{StaticResource TitleTextBlockStyle}"/>
+            <Button Content="Полигон" Margin="0,0,0,5" Command="{Binding PolygonToolCommand}" Style="{StaticResource ButtonStyle}"/>
+            <Button Content="Прямоугольник" Margin="0,0,0,5" Command="{Binding RectangleToolCommand}" Style="{StaticResource ButtonStyle}"/>
+            <Button Content="Перемещение фигуры" Margin="0,0,0,5" Command="{Binding MoveFigureToolCommand}" Style="{StaticResource ButtonStyle}"/>
+            <Button Content="Перемещение точек" Margin="0,0,0,5" Command="{Binding MovePointsToolCommand}" Style="{StaticResource ButtonStyle}"/>
+            <Button Content="Удаление точек" Margin="0,0,0,5" Command="{Binding DeleteToolCommand}" Style="{StaticResource ButtonStyle}"/>
+            <TextBlock Text="Выход:" Margin="0,0,0,5" Style="{StaticResource TitleTextBlockStyle}" />
+            <Button Command="{Binding ToSettings}" Content="К настройкам" Margin="0,0,0,5" Style="{StaticResource ButtonStyle}"/>
+            <Button Command="{Binding GoBackCommand}" Content="Закрыть проект" Margin="0,0,0,5" Style="{StaticResource ButtonStyle}"/>
         </StackPanel>
 
         <!-- Правая часть: поле для отображения текущей разметки -->
@@ -122,7 +123,7 @@
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="1*"></RowDefinition>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="Выделения:" Margin="0,0,0,5"/>
+            <TextBlock Grid.Row="0" Text="Выделения:" Margin="0,0,0,5" Style="{StaticResource TitleTextBlockStyle}"/>
             <ListBox
                 Grid.Row="1"
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
@@ -131,6 +132,7 @@
                 HorizontalAlignment="Stretch"
                 SelectedItem="{Binding SelectedMarkupDisplay, Mode=TwoWay}"
                 ItemsSource="{Binding SelectedImage.Markup}" Margin="0,0,0,5" MinHeight="689" d:ItemsSource="{d:SampleData ItemCount=5}"
+                Background="#CCE5FF"
                 >
                 <b:Interaction.Triggers>
                     <b:EventTrigger EventName="KeyDown">
