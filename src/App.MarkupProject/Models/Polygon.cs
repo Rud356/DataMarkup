@@ -50,6 +50,7 @@ public class Polygon : ReactiveObject, IMarkupFigure
         set
         {
             _classID = _labels.IndexOf(value);
+            if (_classID == -1) _label = "Not assigned";
             _label = _labels[_classID];
         }
     }

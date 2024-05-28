@@ -104,14 +104,15 @@
         <StackPanel Grid.Column="2" VerticalAlignment="Top" Margin="5,5,5,0" HorizontalAlignment="Stretch">
             <TextBlock Text="Выбор класса:" Margin="5,0,0,5" Style="{StaticResource TitleTextBlockStyle}"/>
             <ComboBox ItemsSource="{Binding Project.ConfigLoader.ProjectConfigObj.MarkupClasses}"
-                      SelectedItem="{Binding SelectedMarkupClass}"/>
+                      SelectedItem="{Binding SelectedMarkupClass, Mode=TwoWay}"/>
 
             <TextBlock Text="Инструменты:"  Margin="5,0,0,5" Style="{StaticResource TitleTextBlockStyle}"/>
             <Button Content="Полигон" Margin="0,0,0,5" Command="{Binding PolygonToolCommand}" Style="{StaticResource ButtonStyle}"/>
             <Button Content="Прямоугольник" Margin="0,0,0,5" Command="{Binding RectangleToolCommand}" Style="{StaticResource ButtonStyle}"/>
-            <Button Content="Перемещение фигуры" Margin="0,0,0,5" Command="{Binding MoveFigureToolCommand}" Style="{StaticResource ButtonStyle}"/>
-            <Button Content="Перемещение точек" Margin="0,0,0,5" Command="{Binding MovePointsToolCommand}" Style="{StaticResource ButtonStyle}"/>
-            <Button Content="Удаление точек" Margin="0,0,0,5" Command="{Binding DeleteToolCommand}" Style="{StaticResource ButtonStyle}"/>
+
+            <!-- <Button Content="Перемещение фигуры" Margin="0,0,0,5" Command="{Binding MoveFigureToolCommand}" Style="{StaticResource ButtonStyle}"/> -->
+            <!-- <Button Content="Перемещение точек" Margin="0,0,0,5" Command="{Binding MovePointsToolCommand}" Style="{StaticResource ButtonStyle}"/> -->
+            <!-- <Button Content="Удаление точек" Margin="0,0,0,5" Command="{Binding DeleteToolCommand}" Style="{StaticResource ButtonStyle}"/> -->
             <TextBlock Text="Выход:" Margin="0,0,0,5" Style="{StaticResource TitleTextBlockStyle}" />
             <Button Command="{Binding ToSettings}" Content="К настройкам" Margin="0,0,0,5" Style="{StaticResource ButtonStyle}"/>
             <Button Command="{Binding GoBackCommand}" Content="Закрыть проект" Margin="0,0,0,5" Style="{StaticResource ButtonStyle}"/>

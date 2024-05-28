@@ -153,6 +153,7 @@ internal class MarkupWindowViewModel : BindableBase, INavigationAware
             }
         );
 
+        _eventAggregator.GetEvent<MarkupClassDeletedEvent>().Subscribe(HandleMarkupClassDeletion);
         PolygonToolCommand = new DelegateCommand(ExecutePolygonTool);
         RectangleToolCommand = new DelegateCommand(ExecuteRectangleTool);
         DeleteToolCommand = new DelegateCommand(ExecuteDeleteTool);
@@ -162,6 +163,68 @@ internal class MarkupWindowViewModel : BindableBase, INavigationAware
         CanvasKeyStrokeCommand = new DelegateCommand<KeyEventArgs>(OnKeyStrokeEvent);
         SelectionKeyboardCommand = new DelegateCommand<KeyEventArgs>(SelectionKeyboard);
         PolygonClickedCommand = new DelegateCommand<Polygon>(PolygonClicked);
+    }
+
+    private void HandleMarkupClassDeletion(int removedClassID)
+    {
+        if (_project is null)
+        {
+            return;
+        }
+
+        foreach (var img in _project.Images)
+        {
+            List<IMarkupFigure> figuresToDelete = new();
+            foreach (var markup in img.Markup)
+            {
+                if (markup == null)
+                {
+                    continue;
+                }
+
+                if (markup.AssignedClassID == removedClassID) {
+                    figuresToDelete.Add(markup);
+                }
+
+                if (markup.AssignedClassID > removedClassID)
+                {
+                    // Since class is being removed - we need to lower the value of all classes
+                    markup.AssignedClassID -= 1;
+                }
+            }
+
+            foreach (var markup in figuresToDelete)
+            {
+                // Delete markups that are no longer needed since class is dropped
+                img.Markup.Remove(markup);
+            }
+        }
+
+        // Force sync images display and actual data
+        List<IMarkupFigure> figuresToDeleteOnCurrent = new();
+        if (SelectedImage is null)
+        {
+            return;
+        }
+
+        foreach (var markup in SelectedImage.Markup)
+        {
+            
+            if (markup == null)
+            {
+                break;
+            }
+
+            if (markup.AssignedClassID == -1)
+            {
+                figuresToDeleteOnCurrent.Add(markup);
+            }
+        }
+        foreach (var markup in figuresToDeleteOnCurrent)
+        {
+            // Delete markups that are no longer needed since class is dropped
+            SelectedImage.Markup.Remove(markup);
+        }
     }
 
     private void OnMouseWheel(MouseWheelEventArgs e)
