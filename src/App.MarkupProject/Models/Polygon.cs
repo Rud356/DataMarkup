@@ -34,6 +34,7 @@ public class Polygon : ReactiveObject, IMarkupFigure
     public Polygon(ref ObservableCollection<string> labels, int classID) : this(ref labels)
     {
         AssignedClassID = classID;
+        AssignedClass = labels[classID];
     }
 
     public Polygon(ref ObservableCollection<string> labels, int classID, bool isVisible) : this(ref labels, classID)

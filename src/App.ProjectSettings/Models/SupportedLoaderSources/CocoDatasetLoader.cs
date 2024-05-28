@@ -14,6 +14,7 @@ namespace App.ProjectSettings.Models.SupportedLoaderSources
     {
         public IList<Tuple<string, Tuple<int, int>, IList<MarkupDTO>>> LoadMarkup(string markupText)
         {
+            object obj = JsonConvert.DeserializeObject(markupText);
             CocoFormatDTO? markup = JsonConvert.DeserializeObject<CocoFormatDTO>(markupText);
 
             if (markup is null)
@@ -36,10 +37,10 @@ namespace App.ProjectSettings.Models.SupportedLoaderSources
                     MarkupFigureType markupFigureType;
                     List<Tuple<int, int>> points = new();
 
-                    if (annotation.segmenation.Count() > 0)
+                    if (annotation.segmentation is not null && annotation.segmentation.Count() > 0)
                     {
                         markupFigureType = MarkupFigureType.polygon;
-                        foreach (var point in annotation.segmenation)
+                        foreach (var point in annotation.segmentation)
                         {
                             points.Add(new Tuple<int, int>((int)point[0], (int)point[1]));
                         }

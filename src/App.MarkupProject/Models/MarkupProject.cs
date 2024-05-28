@@ -148,7 +148,7 @@ namespace App.MarkupProject.Models
                                 {
                                     poly.Points.Add(new Vertex(p.Item1, p.Item2));
                                 }
-
+                                poly.AssignedClass = Labels[fig.AssignedClassID];
                                 figures.Add(poly);
                             }
                             else if (fig.MarkupType== MarkupFigureType.bbox)
@@ -167,7 +167,12 @@ namespace App.MarkupProject.Models
                             else continue;
                         }
 
-                        _images.Add(new MarkupImage(imageMarkup.Item1, true, figures, imageMarkup.Item2));
+                        Images.Add(new MarkupImage(
+                            Path.Combine(ConfigLoader.ProjectConfigObj.ProjectPath, imageMarkup.Item1),
+                            true,
+                            figures,
+                            imageMarkup.Item2
+                        ));
                         passedImages.Add(Path.GetFileName(imageMarkup.Item1));
                     }
                 }
