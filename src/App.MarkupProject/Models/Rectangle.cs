@@ -17,6 +17,7 @@ namespace App.MarkupProject.Models
         public Rectangle(ref ObservableCollection<string> labels, Tuple<int, int, int, int> bbox, int classID) : base(ref labels, classID, true)
         {
             AssignedClassID = classID;
+            AssignedClass = labels[classID];
             _topCorner = new Vertex(bbox.Item1, bbox.Item2);
             _bottomCorner = new Vertex(bbox.Item3, bbox.Item4);
             setCorners(_topCorner, _bottomCorner);

@@ -94,6 +94,7 @@ internal class MarkupWindowViewModel : BindableBase, INavigationAware
     public ICommand PolygonClickedCommand { get; }
     public ICommand CanvasKeyStrokeCommand { get; }
 
+    public ICommand ExportProject { get; }
     public ICommand SelectionKeyboardCommand { get; }
 
     public ICommand ToSettings { get; }
@@ -152,7 +153,11 @@ internal class MarkupWindowViewModel : BindableBase, INavigationAware
                 _eventAggregator.GetEvent<ConfigSharingEvent>().Publish(_project.ConfigLoader);
             }
         );
-
+        ExportProject = new DelegateCommand(() =>
+        {
+            if (_project is not null) _project.ExportProject();
+        }
+        );
         _eventAggregator.GetEvent<MarkupClassDeletedEvent>().Subscribe(HandleMarkupClassDeletion);
         PolygonToolCommand = new DelegateCommand(ExecutePolygonTool);
         RectangleToolCommand = new DelegateCommand(ExecuteRectangleTool);

@@ -85,18 +85,18 @@ namespace App.ProjectSettings.DTO
         public int id { get; set; }
         public int image_id { get; set; }
         public int category_id { get; set; }
-        public List<List<float>> segmenation { get; set; }
+        public List<List<float>> segmentation { get; set; }
         public float area { get; set; }
         public List<float> bbox { get; set; }
         public bool iscword { get; set; }
         public JObject attributes { get; set; }
 
-        public Annotation(int id, int image_id, int category_id, List<List<float>> segmenation, float area, List<float> bbox, bool iscword, JObject attributes)
+        public Annotation(int id, int image_id, int category_id, List<List<float>> segmentation, float area, List<float> bbox, bool iscword, JObject attributes)
         {
             this.id = id;
             this.image_id = image_id;
             this.category_id = category_id;
-            this.segmenation = segmenation;
+            this.segmentation = segmentation;
             this.area = area;
             this.bbox = bbox;
             this.iscword = iscword;

@@ -65,8 +65,26 @@ namespace App.MarkupProject.Models
             {
                 List<MarkupDTO> markupDTOs = new();
 
-                var rectangles = image.Markup.OfType<Rectangle>().ToList();
-                var polygons = image.Markup.OfType<Polygon>().ToList();
+                var rectangles = new List<Rectangle>();
+                var polygons = new List<Polygon>();
+
+                foreach (var markup in image.Markup)
+                {
+                    if (markup == null)
+                        continue;
+
+                    if (markup.AssignedClassID == -1)
+                        continue;
+
+                    if (markup is Rectangle)
+                    {
+                        rectangles.Add((Rectangle)markup);
+                    }
+                    else
+                    {
+                        polygons.Add((Polygon)markup);
+                    }
+                }
 
                 foreach (var polygon in polygons)
                 {
@@ -95,10 +113,11 @@ namespace App.MarkupProject.Models
                     image.Resolution,
                     markupDTOs
                 );
+                images.Add(imgDTO);
             }
 
             Formatter.saveMarkup(
-                Path.Combine(ConfigLoader.ProjectConfigObj.ProjectConfigPath, "instance_default.json"),
+                Path.Combine(ConfigLoader.ProjectConfigObj.ProjectPath, "instance_default.json"),
                 ConfigLoader.ProjectConfigObj.ProjectName,
                 ConfigLoader.ProjectConfigObj.MarkupClasses.ToList(),
                 images
@@ -129,7 +148,7 @@ namespace App.MarkupProject.Models
                                 {
                                     poly.Points.Add(new Vertex(p.Item1, p.Item2));
                                 }
-
+                                poly.AssignedClass = Labels[fig.AssignedClassID];
                                 figures.Add(poly);
                             }
                             else if (fig.MarkupType== MarkupFigureType.bbox)
@@ -148,7 +167,12 @@ namespace App.MarkupProject.Models
                             else continue;
                         }
 
-                        _images.Add(new MarkupImage(imageMarkup.Item1, true, figures, imageMarkup.Item2));
+                        Images.Add(new MarkupImage(
+                            Path.Combine(ConfigLoader.ProjectConfigObj.ProjectPath, imageMarkup.Item1),
+                            true,
+                            figures,
+                            imageMarkup.Item2
+                        ));
                         passedImages.Add(Path.GetFileName(imageMarkup.Item1));
                     }
                 }

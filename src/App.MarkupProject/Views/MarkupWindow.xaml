@@ -114,6 +114,7 @@
             <!-- <Button Content="Перемещение точек" Margin="0,0,0,5" Command="{Binding MovePointsToolCommand}" Style="{StaticResource ButtonStyle}"/> -->
             <!-- <Button Content="Удаление точек" Margin="0,0,0,5" Command="{Binding DeleteToolCommand}" Style="{StaticResource ButtonStyle}"/> -->
             <TextBlock Text="Выход:" Margin="0,0,0,5" Style="{StaticResource TitleTextBlockStyle}" />
+            <Button Command="{Binding ExportProject}" Content="Сохранить проект" Margin="0,0,0,5" Style="{StaticResource ButtonStyle}"/>
             <Button Command="{Binding ToSettings}" Content="К настройкам" Margin="0,0,0,5" Style="{StaticResource ButtonStyle}"/>
             <Button Command="{Binding GoBackCommand}" Content="Закрыть проект" Margin="0,0,0,5" Style="{StaticResource ButtonStyle}"/>
         </StackPanel>

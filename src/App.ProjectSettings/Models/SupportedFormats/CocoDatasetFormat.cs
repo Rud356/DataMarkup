@@ -94,10 +94,6 @@ namespace App.ProjectSettings.Models.SupportedFormats
 
                     if (markup.MarkupType == MarkupFigureType.polygon)
                     {
-                        if (markup.Points.Count != 4)
-                        {
-                            break;
-                        }
                         var bottom = markup.Points.Max();
                         var top = markup.Points.Min();
 
@@ -114,24 +110,28 @@ namespace App.ProjectSettings.Models.SupportedFormats
                         bbox.Add(top.Item1);
                         bbox.Add(top.Item2);
                         int w = bottom.Item1 - top.Item1, h = bottom.Item2 - top.Item2;
-                        bbox.Append(w);
-                        bbox.Append(h);
+                        bbox.Add(w);
+                        bbox.Add(h);
                         
                         area = GetArea(markup.Points);
                     }
                     else if (markup.MarkupType == MarkupFigureType.bbox)
                     {
+                        if (markup.Points.Count != 4)
+                        {
+                            break;
+                        }
                         List<Tuple<int, int>> points = markup.Points.OrderBy(o => o).ToList();
                         Tuple<int, int> top = points.First();
                         Tuple<int, int> bottom = points.Last();
-                        bbox.Append(top.Item1);
-                        bbox.Append(top.Item2);
+                        bbox.Add(top.Item1);
+                        bbox.Add(top.Item2);
                         // According to https://github.com/cocodataset/cocoapi/issues/34
                         // it has to be width and height, so bottom - top coordinates, since 0, 0 is top left
                         // and all others are positive values from there
                         int w = bottom.Item1 - top.Item1, h = bottom.Item2 - top.Item2;
-                        bbox.Append(w);
-                        bbox.Append(h);
+                        bbox.Add(w);
+                        bbox.Add(h);
                         area = GetArea(new Tuple<int, int>(w, h));
                     }
                     else continue;
@@ -160,7 +160,8 @@ namespace App.ProjectSettings.Models.SupportedFormats
                 images,
                 annotations
             };
-            string output = JsonConvert.SerializeObject(images);
+            string output = JsonConvert.SerializeObject(projectsMarkup);
+            File.WriteAllText(saveTo, output);
         }
 
         private static float GetDeterminant(float x1, float y1, float x2, float y2)
