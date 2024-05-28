@@ -12,6 +12,10 @@ using System.Windows.Controls;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.Drawing;
+using System.Windows.Media;
+using System.DirectoryServices;
+using DynamicData.Binding;
+using System.Reactive.Linq;
 
 namespace App.MarkupProject.Models
 {
@@ -53,6 +57,8 @@ namespace App.MarkupProject.Models
 
         [Reactive] public string ImagePath { get; }
 
+        public string Name { get => Path.GetFileName(ImagePath); }
+
         [Reactive] public bool IsIncludedInExport { get; set; }
 
         [Reactive] public ObservableCollection<IMarkupFigure> Markup { get => _imagesFigures; }
@@ -60,21 +66,21 @@ namespace App.MarkupProject.Models
 
         private static Tuple<int, int> GetResolution(string path)
         {
-            if (File.Exists(path))
+            if (!File.Exists(path))
             {
                 throw new FileNotFoundException();
             }
 
-            string[] ALLOWED_EXTENSIONS = { ".jpeg", ".png" };
+            string[] ALLOWED_EXTENSIONS = { ".jpg", ".jpeg", ".png" };
             if (!ALLOWED_EXTENSIONS.Contains<string>(Path.GetExtension(path).ToLower()))
             {
                 throw new FileFormatException("Not allowed file format loaded");
             }
 
             var img = Bitmap.FromFile(path);
-            int docHeight = (int) (img.Height / img.VerticalResolution);
-            int docWidth = (int) (img.Width / img.HorizontalResolution);
-
+            int docHeight = img.Height;
+            int docWidth = img.Width;
+            img.Dispose();
             return new Tuple<int, int>(docWidth, docHeight);
         }
     }

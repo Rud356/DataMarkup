@@ -11,9 +11,10 @@ namespace App.ProjectSettings.Models.Interfaces
 {
     public interface IMarkupProject
     {
-        public IProjectConfigLoader ConfigLoader { get; }
+        public IProjectConfigLoader ConfigLoader { get; set; }
         public IMarkupFormatter Formatter { get; set; }
         public ObservableCollection<IMarkupImage> Images { get; }
+        public ref ObservableCollection<string> Labels { get; }
         public string Name { get; set; }
 
         public void ExportProject();

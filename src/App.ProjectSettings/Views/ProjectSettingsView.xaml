@@ -1,0 +1,104 @@
+﻿<UserControl x:Class="App.ProjectSettings.Views.ProjectSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:App.ProjectSettings.Views"
+             xmlns:models="clr-namespace:App.ProjectSettings.Models"
+             xmlns:viewmodels="clr-namespace:App.ProjectSettings.ViewModels"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance viewmodels:ProjectSettingsViewModel}"
+             d:Background="LightSteelBlue"
+             d:DesignHeight="720" d:DesignWidth="1280">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"></ColumnDefinition>
+            <ColumnDefinition Width="5*"></ColumnDefinition>
+            <ColumnDefinition Width="2*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <!-- Содержимое страницы настроек -->
+
+        <Grid Grid.Column="1" Grid.Row="1" Margin="5,5,5,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="10*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" MaxHeight="30"/>
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="2*"/>
+            </Grid.RowDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0">Имя проекта:</Label>
+            <TextBox Text="{Binding Config.ProjectConfigObj.ProjectName}" Grid.Row="0" Grid.Column="1" Margin="5,5,5,5"></TextBox>
+
+            <Label Grid.Row="1" Content="Классы выделений:"></Label>
+            <ListBox
+                Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Stretch"
+                Margin="5"
+                ItemsSource="{Binding editableClassNamesProxy}"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                d:ItemsSource="{d:SampleData ItemCount=5}"
+                >
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0" HorizontalAlignment="Stretch" Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            
+                            
+                            </TextBox>
+                            <Button
+                                Grid.Column="1" Content="Delete" HorizontalAlignment="Right"
+                                Command="{Binding DataContext.DeleteClassCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                CommandParameter="{Binding}"
+                            />
+                        </Grid>
+
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Label Content="Добавить класс: " Grid.Row="2"></Label>
+            <Grid Grid.Row="2" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="8*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+                <TextBox Text="{Binding InputedClassName.Value}" Margin="5" Grid.Column="0"/>
+                <Button Content="Добавить" Margin="5" Grid.Column="1" Command="{Binding AddClassCommand}"/>
+            </Grid>
+
+        </Grid>
+
+        <!-- Кнопка Назад -->
+        <Button Content="Назад" Command="{Binding ToMarkup}" Grid.Column="3" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,5,5,5" Style="{StaticResource ButtonStyle}"/>
+
+        <!-- Кнопки применения и отмены -->
+        <Grid Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="1" Content="Применить"  Style="{StaticResource ButtonStyle}" Command="{Binding ApplyChanges}"  HorizontalAlignment="Stretch" Margin="5"/>
+            <Button Grid.Column="2" Content="Отмена" Style="{StaticResource ButtonStyle}" Command="{Binding CancelChanges}"  HorizontalAlignment="Stretch" Margin="5"/>
+        </Grid>
+    </Grid>
+</UserControl>

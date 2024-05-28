@@ -1,8 +1,11 @@
-﻿using System.Collections.ObjectModel;
+﻿using Prism.Commands;
+using System.Collections.ObjectModel;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.IO;
 using App.ProjectSettings.Models.Interfaces;
+using System.Windows.Input;
+using DynamicData;
 
 namespace App.ProjectSettings.Models
 {
@@ -46,7 +49,7 @@ namespace App.ProjectSettings.Models
         [Reactive] public string ProjectName { get; set; }
         [Reactive] public IMarkupFormatter DataFormat { get; set; }
 
-        [Reactive] public ObservableCollection<string> MarkupClasses { get => _markupClasses; }
+        [Reactive] public ref ObservableCollection<string> MarkupClasses { get => ref _markupClasses; }
 
         [Reactive] public ObservableCollection<string> ExcludedImages { get => _excludedImages; }
 
@@ -62,8 +65,7 @@ namespace App.ProjectSettings.Models
 
         public void renameMarkupClassTo(string markupClassName, string newMarkupClassName)
         {
-            _markupClasses.Remove(markupClassName);
-            _markupClasses.Add(newMarkupClassName);
+            _markupClasses.Replace(markupClassName, newMarkupClassName);
         }
 
         public void excludeImage(string ImagePath)

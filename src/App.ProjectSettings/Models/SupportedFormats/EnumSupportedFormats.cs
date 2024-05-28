@@ -14,12 +14,17 @@ namespace App.ProjectSettings.Models.SupportedFormats
 
     internal static class SupportedFormats
     {
-        public static EnumSupportedFormats formatToEnum(IMarkupFormatter format)
+        public static EnumSupportedFormats FormatToEnum(IMarkupFormatter format)
         {
-            throw new NotImplementedException();
+            if (format.GetType().ToString() == "CocoDatasetFormat")
+            {
+                    return EnumSupportedFormats.CocoDataset;
+            }
+
+            return EnumSupportedFormats.CocoDataset;
         }
 
-        public static EnumSupportedFormats formatToEnum(CocoDatasetFormat format)
+        public static EnumSupportedFormats FormatToEnum(CocoDatasetFormat format)
         {
             return EnumSupportedFormats.CocoDataset;
         }

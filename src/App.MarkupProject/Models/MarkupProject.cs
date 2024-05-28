@@ -24,8 +24,16 @@ namespace App.MarkupProject.Models
             loadImages();
         }
 
+        IProjectConfigLoader _projConf;
+
         [Reactive]
-        public IProjectConfigLoader ConfigLoader { get; }
+        public IProjectConfigLoader ConfigLoader {
+            get {  return _projConf; }
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _projConf, value);
+            }
+        }
 
         [Reactive]
         public IMarkupFormatter Formatter
@@ -44,6 +52,11 @@ namespace App.MarkupProject.Models
             set => ConfigLoader.ProjectConfigObj.ProjectName = value;
         }
 
+        [Reactive]
+        public ref ObservableCollection<string> Labels
+        {
+            get => ref ConfigLoader.ProjectConfigObj.MarkupClasses;
+        }
         public void ExportProject()
         {
             List<ImageDTO> images = new();
@@ -61,7 +74,7 @@ namespace App.MarkupProject.Models
                         new MarkupDTO(
                             polygon.AssignedClassID,
                             MarkupFigureType.polygon,
-                            polygon.Points
+                            polygon.Points.Select(v => v.ToTuple()).ToList()
                         )
                     );
                 }
@@ -72,7 +85,7 @@ namespace App.MarkupProject.Models
                         new MarkupDTO(
                             rectangle.AssignedClassID,
                             MarkupFigureType.bbox,
-                            rectangle.Points
+                            rectangle.Points.Select(v => v.ToTuple()).ToList()
                         )
                     );
                 }
@@ -110,11 +123,11 @@ namespace App.MarkupProject.Models
                         {
                             if (fig.MarkupType == MarkupFigureType.polygon)
                             {
-                                Polygon poly = new();
+                                Polygon poly = new(ref Labels);
 
                                 foreach (var p in fig.Points)
                                 {
-                                    poly.Points.Add(p);
+                                    poly.Points.Add(new Vertex(p.Item1, p.Item2));
                                 }
 
                                 figures.Add(poly);
@@ -123,6 +136,7 @@ namespace App.MarkupProject.Models
                             {
                                 figures.Add(
                                     new Rectangle(
+                                        ref Labels,
                                         new Tuple<int, int, int, int>(
                                             // Bbox contains 4 points in dto, which have clock-wise order of points (x, y) pixels
                                             fig.Points[0].Item1, fig.Points[0].Item2,
@@ -141,22 +155,23 @@ namespace App.MarkupProject.Models
 
                 catch
                 { }
+            }
 
-                foreach (var file in Directory.GetFiles(ConfigLoader.ProjectConfigObj.ProjectPath))
+            foreach (var file in Directory.GetFiles(ConfigLoader.ProjectConfigObj.ProjectPath))
+            {
+                try
                 {
-                    try
-                    {
-                        if (passedImages.Contains(Path.GetFileName(file))) {
-                            continue;
-                        }
-
-                        MarkupImage img = new(file);
-                        Images.Add(img);
-                    }
-                    catch (FileFormatException)
+                    if (passedImages.Contains(Path.GetFileName(file)))
                     {
                         continue;
                     }
+
+                    MarkupImage img = new(file);
+                    Images.Add(img);
+                }
+                catch (FileFormatException)
+                {
+                    continue;
                 }
             }
         }

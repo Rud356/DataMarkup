@@ -2,38 +2,87 @@
 using ReactiveUI.Fody.Helpers;
 using System.Collections.ObjectModel;
 using ReactiveUI;
+using System.Configuration;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
+using Prism.Commands;
 
-namespace App.MarkupProject.Models
+namespace App.MarkupProject.Models;
+
+/// <summary>
+/// Points are given in (x, y) format, with ints repserenting pixels poisiton on image.
+/// </summary>
+public class Polygon : ReactiveObject, IMarkupFigure
 {
-    /// <summary>
-    /// Points are given in (x, y) format, with ints repserenting pixels poisiton on image.
-    /// </summary>
-    public class Polygon : ReactiveObject, IMarkupFigure
+    private ObservableCollection<Vertex> points;
+    private int _classID;
+    private bool _isVisible;
+    private bool _isSelected;
+    private ObservableCollection<string> _labels;
+
+    public ICommand DragDeltaCommand { get; }
+
+    public Polygon(ref ObservableCollection<string> labels)
     {
-        private ObservableCollection<Tuple<int, int>> _points;
-        private int _classID;
-        private bool _isHidden;
+        points = new();
+        AssignedClassID = -1;
+        IsVisible = true;
+        _labels = labels;
+        DragDeltaCommand = new DelegateCommand<DragDeltaEventArgs>(OnDragDelta);
+    }
 
-        public Polygon()
-        {
-            _points = new();
-            _classID = -1;
-            _isHidden = false;
+    public Polygon(ref ObservableCollection<string> labels, int classID) : this(ref labels)
+    {
+        AssignedClassID = classID;
+    }
+
+    public Polygon(ref ObservableCollection<string> labels, int classID, bool isVisible) : this(ref labels, classID)
+    {
+        IsVisible = isVisible;
+    }
+
+    private string _label = "Not assigned";
+
+    [Reactive] public string AssignedClass {
+        get {
+            return _label;
         }
-
-        public Polygon(int classID) : this()
+        set
         {
-            _classID = classID;
+            _classID = _labels.IndexOf(value);
+            if (_classID == -1) _label = "Not assigned";
+            _label = _labels[_classID];
         }
+    }
 
-        public Polygon(int classID, bool isHidden) : this(classID)
+    [Reactive] public int AssignedClassID { get => _classID; set => _classID = value; }
+    [Reactive] public bool IsVisible {
+        get => _isVisible;
+        set => this.RaiseAndSetIfChanged(ref _isVisible, value);
+    }
+
+    [Reactive] public ObservableCollection<Vertex> Points => points;
+
+    public ref ObservableCollection<string> Labels { get => ref _labels; }
+
+    [Reactive]
+    public bool IsSelected {
+        get => _isSelected;
+        set
         {
-            _isHidden = isHidden;
+            this.RaiseAndSetIfChanged(ref _isSelected, value);
+            this.RaisePropertyChanged(nameof(this.IsSelected));
         }
+    }
 
-        [Reactive] public int AssignedClassID { get => _classID; set => _classID = value; }
-        [Reactive] public bool IsHidden { get => _isHidden; set => _isHidden = value; }
-
-        [Reactive] public ObservableCollection<Tuple<int, int>> Points => _points;
+    private void OnDragDelta(DragDeltaEventArgs e)
+    {
+        // Assuming Vertex has properties X and Y
+        var vertex = e.Source as Vertex;
+        if (vertex != null)
+        {
+            vertex.X += (int) e.HorizontalChange;
+            vertex.Y += (int) e.VerticalChange;
+        }
     }
 }
