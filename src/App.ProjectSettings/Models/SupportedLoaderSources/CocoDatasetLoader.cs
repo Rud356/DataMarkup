@@ -31,7 +31,7 @@ namespace App.ProjectSettings.Models.SupportedLoaderSources
                 List<MarkupDTO> markupParsed = new();
                 foreach (
                     Annotation annotation in markup.annotations
-                    .Select(x => x).Where(x => x.id == image.id)
+                    .Select(x => x).Where(x => x.image_id == image.id)
                 )
                 {
                     MarkupFigureType markupFigureType;

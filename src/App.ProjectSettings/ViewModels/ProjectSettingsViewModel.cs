@@ -134,6 +134,7 @@ public class ProjectSettingsViewModel : BindableBase, INavigationAware
 
     public void OnNavigatedFrom(NavigationContext navigationContext)
     {
+        InputedClassName.Value = string.Empty;
         // Save the changes to the config before navigating away
         if (applyChanges && _config is not null)
         {
