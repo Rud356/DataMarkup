@@ -30,7 +30,8 @@ namespace App.ProjectSettings.Models.SupportedFormats
         {
             if (!File.Exists(saveTo))
             {
-                File.Create(saveTo);
+                var f = File.Create(saveTo);
+                f.Close();
             }
 
             object license = new
