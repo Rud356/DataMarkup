@@ -37,6 +37,8 @@ public class ProjectSettingsViewModel : BindableBase, INavigationAware
     public ICommand AddClassCommand { get; }
     public ICommand DeleteClassCommand { get; }
 
+
+    public ObservableString ProjectName { get; } = new ObservableString { Value = string.Empty };
     public ObservableString InputedClassName { get; } = new ObservableString { Value = string.Empty };
     public ObservableCollection<ObservableString> editableClassNamesProxy { get; }
     private List<string> originalClassesList = new List<string>();
@@ -87,6 +89,7 @@ public class ProjectSettingsViewModel : BindableBase, INavigationAware
         editableClassNamesProxy.Clear();
         var list = config.ProjectConfigObj.MarkupClasses.ToList();
         originalClassesList = list;
+        ProjectName.Value = config.ProjectConfigObj.ProjectName;
 
         for ( var i = 0; i < list.Count; i++ )
         {
@@ -142,7 +145,7 @@ public class ProjectSettingsViewModel : BindableBase, INavigationAware
                     item.Value = string.Empty;
                 }
             }
-
+            _config.ProjectConfigObj.ProjectName = ProjectName.Value;
             _config?.SaveConfig(_config.ProjectConfigObj);
             navigationContext.Parameters.Add("projectConfig", _config?.ProjectConfigObj);
         }

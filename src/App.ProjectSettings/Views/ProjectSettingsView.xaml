@@ -39,7 +39,7 @@
             </Grid.RowDefinitions>
 
             <Label Grid.Row="0" Grid.Column="0">Имя проекта:</Label>
-            <TextBox Text="{Binding Config.ProjectConfigObj.ProjectName}" Grid.Row="0" Grid.Column="1" Margin="5,5,5,5"></TextBox>
+            <TextBox Text="{Binding ProjectName.Value}" Grid.Row="0" Grid.Column="1" Margin="5,5,5,5"></TextBox>
 
             <Label Grid.Row="1" Content="Классы выделений:"></Label>
             <ListBox
