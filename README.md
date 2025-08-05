@@ -1,5 +1,17 @@
 # DataMarkup
-## Building it yourself
-To build project you'll need Visual Studio 2022 and .Net 6.0
+DataMarkup – это инструмент для разметки изображений в формате COCO dataset, применяемый для подготовки датасетов под обучении нейронных сетей.
 
-Open src -> App -> App.sln and run Build from Visual Studio
+## Возможности
+
+- Поддержка аннотации:
+  - ограничивающие прямоугольники (bounding boxes)
+  - полигоны и маски сегментации
+  - назначение классов
+- Экспорт аннотаций в JSON-файл по спецификации COCO  
+- Визуальная инспекция и корректировка разметки в интерактивном режиме  
+- Гибкая настройка списка классов и пользовательских атрибутов  
+
+## Building it yourself
+Для сборки требуется Visual Studio 2022 и установленный .Net 6.0
+
+Открыть файл src/App/App.sln и запустить сборку из Visual Studio
